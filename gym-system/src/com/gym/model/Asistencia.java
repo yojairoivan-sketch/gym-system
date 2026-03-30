@@ -1,20 +1,21 @@
 package com.gym.model;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 
 // Representa el registro de entrada/salida de un cliente
 public class Asistencia {
 
     private int id;
     private LocalDate fecha;
-    private String horaEntrada;
-    private String horaSalida;   // Puede ser null si aún está en el gimnasio
-    private boolean activo;      // Para borrado lógico
-    private Cliente cliente;     // Cliente al que pertenece este registro
+    private LocalTime horaEntrada;
+    private LocalTime horaSalida;  // Puede ser null si aún está en el gimnasio
+    private boolean activo;        // Para borrado lógico
+    private Cliente cliente;       // Cliente al que pertenece este registro
 
     // Constructor completo
-    public Asistencia(int id, LocalDate fecha, String horaEntrada,
-                      String horaSalida, Cliente cliente) {
+    public Asistencia(int id, LocalDate fecha, LocalTime horaEntrada,
+                      LocalTime horaSalida, Cliente cliente) {
         this.id = id;
         this.fecha = fecha;
         this.horaEntrada = horaEntrada;
@@ -24,7 +25,7 @@ public class Asistencia {
     }
 
     // Constructor sin ID y sin hora de salida (cuando el cliente entra)
-    public Asistencia(LocalDate fecha, String horaEntrada, Cliente cliente) {
+    public Asistencia(LocalDate fecha, LocalTime horaEntrada, Cliente cliente) {
         this(0, fecha, horaEntrada, null, cliente);
     }
 
@@ -40,11 +41,11 @@ public class Asistencia {
     public LocalDate getFecha() { return fecha; }
     public void setFecha(LocalDate fecha) { this.fecha = fecha; }
 
-    public String getHoraEntrada() { return horaEntrada; }
-    public void setHoraEntrada(String horaEntrada) { this.horaEntrada = horaEntrada; }
+    public LocalTime getHoraEntrada() { return horaEntrada; }
+    public void setHoraEntrada(LocalTime horaEntrada) { this.horaEntrada = horaEntrada; }
 
-    public String getHoraSalida() { return horaSalida; }
-    public void setHoraSalida(String horaSalida) { this.horaSalida = horaSalida; }
+    public LocalTime getHoraSalida() { return horaSalida; }
+    public void setHoraSalida(LocalTime horaSalida) { this.horaSalida = horaSalida; }
 
     public boolean isActivo() { return activo; }
     public void setActivo(boolean activo) { this.activo = activo; }
