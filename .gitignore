@@ -12,6 +12,7 @@
 
 # Package Files #
 *.jar
+!lib/javafx-sdk-26/lib/*.jar
 *.war
 *.nar
 *.ear
