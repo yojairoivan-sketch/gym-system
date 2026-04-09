@@ -1,9 +1,8 @@
-
 {
     "java.project.sourcePaths": ["src"],
     "java.project.outputPath": "bin",
     "java.project.referencedLibraries": [
         "lib/**/*.jar",
-        "C:/Users/i3 Touch/Downloads/javafx-sdk-26/lib/*.jar"
+        "C:/Users/i3 Touch/Downloads/openjfx-21.0.10_windows-x64_bin-sdk/lib/*.jar"
     ]
 }
