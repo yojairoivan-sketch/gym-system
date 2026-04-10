@@ -22,13 +22,23 @@ public class Main extends Application {
     @Override
     public void start(Stage stage) {
 
+        // ── Crear todas las pantallas ──
+        ClienteUI clienteUI         = new ClienteUI();
+        MembresiaUI membresiaUI     = new MembresiaUI();
+        InscripcionUI inscripcionUI = new InscripcionUI();
+        ProductoUI productoUI       = new ProductoUI();
+
+        // VentaUI recibe la lista de productos de ProductoUI
+        // para que ambas pantallas compartan los mismos productos
+        VentaUI ventaUI = new VentaUI(productoUI.getListaProductos());
+
         // ── Barra de navegación superior ──
         HBox navbar = new HBox(15);
         navbar.setStyle("-fx-background-color: " + COLOR_NAVBAR + ";");
         navbar.setPadding(new Insets(12, 20, 12, 20));
 
         // Logo del sistema
-        Label logo = new Label("💪 GymPro");
+        javafx.scene.control.Label logo = new javafx.scene.control.Label("💪 GymPro");
         logo.setFont(Font.font("Arial", FontWeight.BOLD, 16));
         logo.setTextFill(Color.web(COLOR_BOTON));
 
@@ -36,45 +46,51 @@ public class Main extends Application {
         Button btnInscripcion = crearBotonNav("Inscripción");
         Button btnClientes    = crearBotonNav("Clientes");
         Button btnMembresias  = crearBotonNav("Membresías");
+        Button btnProductos   = crearBotonNav("Productos");
+        Button btnVentas      = crearBotonNav("Ventas");
 
-        navbar.getChildren().addAll(logo, btnInscripcion, btnClientes, btnMembresias);
+        navbar.getChildren().addAll(logo, btnInscripcion, btnClientes, btnMembresias, btnProductos, btnVentas);
 
         // ── Área de contenido con scroll ──
-        // Aquí se muestra la pantalla seleccionada
         ScrollPane scroll = new ScrollPane();
         scroll.setFitToWidth(true);
         scroll.setStyle("-fx-background-color: " + COLOR_FONDO + ";");
 
-        // ── Crear las vistas de cada pantalla ──
-        ClienteUI clienteUI       = new ClienteUI();
-        MembresiaUI membresiaUI   = new MembresiaUI();
-        InscripcionUI inscripcionUI = new InscripcionUI();
-
-        // Mostrar la pantalla de Inscripción por defecto al iniciar
+        // Mostrar la pantalla de Inscripción por defecto
         scroll.setContent(inscripcionUI.getVista());
 
-        // ── Navegación: cada botón cambia el contenido del scroll ──
+        // ── Navegación: cada botón cambia el contenido ──
         btnInscripcion.setOnAction(e -> {
             scroll.setContent(inscripcionUI.getVista());
-            resaltarBoton(btnInscripcion, btnClientes, btnMembresias);
+            resaltarBoton(btnInscripcion, btnClientes, btnMembresias, btnProductos, btnVentas);
         });
 
         btnClientes.setOnAction(e -> {
             scroll.setContent(clienteUI.getVista());
-            resaltarBoton(btnClientes, btnInscripcion, btnMembresias);
+            resaltarBoton(btnClientes, btnInscripcion, btnMembresias, btnProductos, btnVentas);
         });
 
         btnMembresias.setOnAction(e -> {
             scroll.setContent(membresiaUI.getVista());
-            resaltarBoton(btnMembresias, btnInscripcion, btnClientes);
+            resaltarBoton(btnMembresias, btnInscripcion, btnClientes, btnProductos, btnVentas);
+        });
+
+        btnProductos.setOnAction(e -> {
+            scroll.setContent(productoUI.getVista());
+            resaltarBoton(btnProductos, btnInscripcion, btnClientes, btnMembresias, btnVentas);
+        });
+
+        btnVentas.setOnAction(e -> {
+            scroll.setContent(ventaUI.getVista());
+            resaltarBoton(btnVentas, btnInscripcion, btnClientes, btnMembresias, btnProductos);
         });
 
         // Resaltar el botón de Inscripción por defecto
-        resaltarBoton(btnInscripcion, btnClientes, btnMembresias);
+        resaltarBoton(btnInscripcion, btnClientes, btnMembresias, btnProductos, btnVentas);
 
-        // ── Layout principal: navbar arriba + contenido abajo ──
+        // ── Layout principal ──
         VBox root = new VBox(navbar, scroll);
-        VBox.setVgrow(scroll, Priority.ALWAYS); // el scroll ocupa todo el espacio restante
+        VBox.setVgrow(scroll, Priority.ALWAYS);
 
         // ── Configuración de la ventana ──
         Scene scene = new Scene(root, 950, 700);
@@ -98,7 +114,7 @@ public class Main extends Application {
 
     // Resalta el botón activo y quita el resaltado de los otros
     private void resaltarBoton(Button activo, Button... otros) {
-        // Estilo del botón activo (morado)
+        // Estilo del botón activo
         activo.setStyle(
             "-fx-background-color: #7c3aed;" +
             "-fx-text-fill: white;" +
@@ -106,7 +122,7 @@ public class Main extends Application {
             "-fx-padding: 6 12;" +
             "-fx-background-radius: 6;"
         );
-        // Estilo normal para los otros botones
+        // Estilo normal para los demás botones
         for (Button btn : otros) {
             btn.setStyle(
                 "-fx-background-color: transparent;" +
