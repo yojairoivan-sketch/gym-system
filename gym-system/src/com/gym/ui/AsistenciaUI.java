@@ -43,7 +43,7 @@ public class AsistenciaUI {
 
         // Carga estilo css
         vista.getStylesheets().add(
-            getClass().getResource("/ui/CSS/asistencia.css").toExternalForm()
+            getClass().getResource("/com/gym/ui/CSS/asistencia.css").toExternalForm()
         );
         vista.getStyleClass().add("asistencia-root");
 

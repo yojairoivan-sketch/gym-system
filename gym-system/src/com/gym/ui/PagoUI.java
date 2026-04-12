@@ -46,7 +46,7 @@ public class PagoUI {
 
         // Carga estilo css
         vista.getStylesheets().add(
-            getClass().getResource("/ui/CSS/pagos.css").toExternalForm()
+            getClass().getResource("/com/gym/ui/CSS/pagos.css").toExternalForm()
         );
         vista.getStyleClass().add("pago-root");
 

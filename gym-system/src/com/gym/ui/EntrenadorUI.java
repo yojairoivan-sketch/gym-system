@@ -47,7 +47,7 @@ public class EntrenadorUI {
 
         // Carga estilo css
         vista.getStylesheets().add(
-            getClass().getResource("/ui/CSS/entrenadores.css").toExternalForm()
+            getClass().getResource("/com/gym/ui/CSS/entrenadores.css").toExternalForm()
         );
         vista.getStyleClass().add("entrenador-root");
 
