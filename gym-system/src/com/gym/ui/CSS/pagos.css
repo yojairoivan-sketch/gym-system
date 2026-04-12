@@ -1,0 +1,193 @@
+
+/* ── Fondo principal de la pantalla ── */
+.pago-root {
+    -fx-background-color: #1a1a2e;
+    -fx-font-family: "Arial";
+}
+
+/* ── Titulo principal "Pagos" ── */
+.pago-titulo {
+    -fx-font-size: 22px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #ffffff;
+}
+
+/* ── Tarjeta contenedora (formulario e historial) ── */
+.pago-card {
+    -fx-background-color: #1f1f35;
+    -fx-border-color: #2a2a45;
+    -fx-border-radius: 12;
+    -fx-background-radius: 12;
+    -fx-padding: 22;
+}
+
+/* ── Subtitulos internos de cada tarjeta ── */
+.pago-subtitulo {
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #8888aa;
+}
+
+/* ── Etiquetas de los campos del formulario ── */
+.pago-label {
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #8888aa;
+}
+
+/* ── Campos de texto (monto, referencia) ── */
+.pago-input {
+    -fx-background-color: #13131f;
+    -fx-border-color: #2a2a45;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+    -fx-text-fill: #e0e0f0;
+    -fx-prompt-text-fill: #444466;
+    -fx-padding: 8 10;
+    -fx-font-size: 13px;
+}
+
+/* Borde morado al enfocar el campo ── */
+.pago-input:focused {
+    -fx-border-color: #7c5cbf;
+}
+
+/* ── ComboBox (cliente, metodo de pago, membresia) ── */
+.pago-combo {
+    -fx-background-color: #13131f;
+    -fx-border-color: #2a2a45;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+}
+
+/* Texto dentro del combo ── */
+.pago-combo .list-cell {
+    -fx-text-fill: #e0e0f0;
+    -fx-background-color: transparent;
+    -fx-font-size: 13px;
+}
+
+/* Lista desplegable del combo ── */
+.pago-combo-popup .list-view {
+    -fx-background-color: #1f1f35;
+    -fx-border-color: #2a2a45;
+}
+
+.pago-combo-popup .list-cell:hover {
+    -fx-background-color: #2a2045;
+}
+
+/* ── DatePicker (fecha de pago) ── */
+.pago-datepicker {
+    -fx-background-color: #13131f;
+    -fx-border-color: #2a2a45;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+}
+
+.pago-datepicker .text-field {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-text-fill: #e0e0f0;
+}
+
+/* ── Boton "Registrar pago" ── */
+.pago-btn-primary {
+    -fx-background-color: linear-gradient(to right, #7c5cbf, #a78bfa);
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-padding: 10 24;
+    -fx-background-radius: 8;
+    -fx-cursor: hand;
+    -fx-font-size: 13px;
+}
+
+.pago-btn-primary:hover {
+    -fx-opacity: 0.9;
+}
+
+/* ── Boton "Refrescar" ── */
+.pago-btn-secondary {
+    -fx-background-color: #2a2a45;
+    -fx-border-color: #3a3a55;
+    -fx-border-radius: 6;
+    -fx-background-radius: 6;
+    -fx-text-fill: #8888aa;
+    -fx-padding: 6 12;
+    -fx-cursor: hand;
+    -fx-font-size: 12px;
+}
+
+.pago-btn-secondary:hover {
+    -fx-text-fill: #a78bfa;
+    -fx-border-color: #7c5cbf;
+}
+
+/* ── Tabla del historial de pagos ── */
+.pago-tabla {
+    -fx-background-color: #13131f;
+    -fx-border-color: #2a2a45;
+    -fx-border-radius: 8;
+    -fx-font-size: 13px;
+}
+
+/* Encabezado de columnas ── */
+.pago-tabla .column-header-background {
+    -fx-background-color: #171727;
+}
+
+.pago-tabla .column-header .label {
+    -fx-text-fill: #555577;
+    -fx-font-weight: bold;
+    -fx-font-size: 11px;
+}
+
+/* Filas de la tabla ── */
+.pago-tabla .table-row-cell {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent transparent #22223a transparent;
+    -fx-text-fill: #e0e0f0;
+}
+
+.pago-tabla .table-row-cell:hover {
+    -fx-background-color: rgba(124,92,191,0.06);
+}
+
+.pago-tabla .table-row-cell:selected {
+    -fx-background-color: rgba(124,92,191,0.18);
+}
+
+/* Celdas generales ── */
+.pago-tabla .table-cell {
+    -fx-text-fill: #e0e0f0;
+    -fx-padding: 10 14;
+}
+
+/* ── Mensaje de exito o error debajo del formulario ── */
+.pago-mensaje-exito {
+    -fx-text-fill: #4ade80;
+    -fx-font-size: 12px;
+}
+
+.pago-mensaje-error {
+    -fx-text-fill: #f87171;
+    -fx-font-size: 12px;
+}
+
+/* ── Monto en verde en la tabla ── */
+.pago-monto-verde {
+    -fx-text-fill: #4ade80;
+    -fx-font-weight: bold;
+}
+
+/* ── Estado completado en verde ── */
+.pago-estado-completado {
+    -fx-text-fill: #4ade80;
+    -fx-font-weight: bold;
+}
+
+/* ── Estado pendiente en amarillo ── */
+.pago-estado-pendiente {
+    -fx-text-fill: #fbbf24;
+    -fx-font-weight: bold;
+}

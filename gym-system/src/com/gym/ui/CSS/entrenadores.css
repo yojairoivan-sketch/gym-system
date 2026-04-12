@@ -1,0 +1,209 @@
+
+/* ── Fondo principal de la pantalla ── */
+.entrenador-root {
+    -fx-background-color: #1a1a2e;
+    -fx-font-family: "Arial";
+}
+
+/* ── Titulo principal "Entrenadores" ── */
+.entrenador-titulo {
+    -fx-font-size: 22px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #ffffff;
+}
+
+/* ── Tarjeta contenedora general ──
+   Usada  en el formulario y en el listado ── */
+.entrenador-card {
+    -fx-background-color: #1f1f35;
+    -fx-border-color: #2a2a45;
+    -fx-border-radius: 12;
+    -fx-background-radius: 12;
+    -fx-padding: 22;
+}
+
+/* ── Subtitulos de cada seccion ── */
+.entrenador-subtitulo {
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #8888aa;
+}
+
+/* ── Etiquetas de los campos del formulario ── */
+.entrenador-label {
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #8888aa;
+}
+
+/* ── Campos de texto del formulario ── */
+.entrenador-input {
+    -fx-background-color: #13131f;
+    -fx-border-color: #2a2a45;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+    -fx-text-fill: #e0e0f0;
+    -fx-prompt-text-fill: #444466;
+    -fx-padding: 8 10;
+    -fx-font-size: 13px;
+}
+
+/* Borde morado al enfocar el campo ── */
+.entrenador-input:focused {
+    -fx-border-color: #7c5cbf;
+}
+
+/* ── ComboBox de estado (Activo, Inactivo, Descanso) ── */
+.entrenador-combo {
+    -fx-background-color: #13131f;
+    -fx-border-color: #2a2a45;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+}
+
+.entrenador-combo .list-cell {
+    -fx-text-fill: #e0e0f0;
+    -fx-background-color: transparent;
+    -fx-font-size: 13px;
+}
+
+.entrenador-combo-popup .list-view {
+    -fx-background-color: #1f1f35;
+    -fx-border-color: #2a2a45;
+}
+
+.entrenador-combo-popup .list-cell:hover {
+    -fx-background-color: #2a2045;
+}
+
+/* ── Boton principal "Guardar" / "Actualizar" ── */
+.entrenador-btn-primary {
+    -fx-background-color: linear-gradient(to right, #7c5cbf, #a78bfa);
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-padding: 10 24;
+    -fx-background-radius: 8;
+    -fx-cursor: hand;
+    -fx-font-size: 13px;
+}
+
+.entrenador-btn-primary:hover {
+    -fx-opacity: 0.9;
+}
+
+/* ── Boton secundario "Cancelar" ── */
+.entrenador-btn-cancelar {
+    -fx-background-color: #2a2a45;
+    -fx-border-color: #3a3a55;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+    -fx-text-fill: #8888aa;
+    -fx-padding: 10 18;
+    -fx-cursor: hand;
+    -fx-font-size: 13px;
+}
+
+.entrenador-btn-cancelar:hover {
+    -fx-text-fill: #e0e0f0;
+}
+
+/* ── Boton "Editar" dentro de la tabla ── */
+.entrenador-btn-editar {
+    -fx-background-color: #2a2a45;
+    -fx-border-color: #3a3a55;
+    -fx-border-radius: 6;
+    -fx-background-radius: 6;
+    -fx-text-fill: #8888aa;
+    -fx-padding: 4 10;
+    -fx-cursor: hand;
+    -fx-font-size: 12px;
+}
+
+.entrenador-btn-editar:hover {
+    -fx-text-fill: #a78bfa;
+    -fx-border-color: #7c5cbf;
+}
+
+/* ── Boton "Eliminar" dentro de la tabla (rojo) ── */
+.entrenador-btn-eliminar {
+    -fx-background-color: rgba(248,113,113,0.15);
+    -fx-border-color: rgba(248,113,113,0.25);
+    -fx-border-radius: 6;
+    -fx-background-radius: 6;
+    -fx-text-fill: #f87171;
+    -fx-padding: 4 10;
+    -fx-cursor: hand;
+    -fx-font-size: 12px;
+}
+
+.entrenador-btn-eliminar:hover {
+    -fx-background-color: rgba(248,113,113,0.28);
+}
+
+/* ── Mensaje de exito o error en el formulario ── */
+.entrenador-mensaje-exito {
+    -fx-text-fill: #4ade80;
+    -fx-font-size: 12px;
+}
+
+.entrenador-mensaje-error {
+    -fx-text-fill: #f87171;
+    -fx-font-size: 12px;
+}
+
+/* ── Tabla del listado de entrenadores ── */
+.entrenador-tabla {
+    -fx-background-color: #13131f;
+    -fx-border-color: #2a2a45;
+    -fx-border-radius: 8;
+    -fx-font-size: 13px;
+}
+
+/* Encabezado de columnas ── */
+.entrenador-tabla .column-header-background {
+    -fx-background-color: #171727;
+}
+
+.entrenador-tabla .column-header .label {
+    -fx-text-fill: #555577;
+    -fx-font-weight: bold;
+    -fx-font-size: 11px;
+}
+
+/* Filas de datos ── */
+.entrenador-tabla .table-row-cell {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent transparent #22223a transparent;
+    -fx-text-fill: #e0e0f0;
+}
+
+.entrenador-tabla .table-row-cell:hover {
+    -fx-background-color: rgba(124,92,191,0.06);
+}
+
+.entrenador-tabla .table-row-cell:selected {
+    -fx-background-color: rgba(124,92,191,0.18);
+}
+
+.entrenador-tabla .table-cell {
+    -fx-text-fill: #e0e0f0;
+    -fx-padding: 10 14;
+}
+
+/* ── Estado "Activo" en verde ── */
+.entrenador-estado-activo {
+    -fx-text-fill: #4ade80;
+    -fx-font-weight: bold;
+}
+
+/* ── Estado "Inactivo" en rojo ── */
+.entrenador-estado-inactivo {
+    -fx-text-fill: #f87171;
+    -fx-font-weight: bold;
+}
+
+/* ── Estado "Descanso" en amarillo ── */
+.entrenador-estado-descanso {
+    -fx-text-fill: #fbbf24;
+    -fx-font-weight: bold;
+}

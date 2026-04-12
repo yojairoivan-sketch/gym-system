@@ -1,0 +1,179 @@
+
+/* ── Fondo principal de la pantalla ── */
+.asistencia-root {
+    -fx-background-color: #1a1a2e;
+    -fx-font-family: "Arial";
+}
+
+/* ── Titulo principal "Asistencia" ── */
+.asistencia-titulo {
+    -fx-font-size: 22px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #ffffff;
+}
+
+/* ── Caja rapida de entrada/salida ── */
+.asistencia-caja-rapida {
+    -fx-background-color: linear-gradient(to right,
+        rgba(124,92,191,0.25),
+        rgba(124,92,191,0.08));
+    -fx-border-color: rgba(167,139,250,0.2);
+    -fx-border-radius: 12;
+    -fx-background-radius: 12;
+    -fx-padding: 18;
+}
+
+/* ── Etiqueta "CEDULA DEL CLIENTE" en la caja rapida ── */
+.asistencia-label-cedula {
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #8888aa;
+}
+
+/* ── Campo de texto para ingresar la cedula ── */
+.asistencia-input-cedula {
+    -fx-background-color: #13131f;
+    -fx-border-color: #2a2a45;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+    -fx-text-fill: #e0e0f0;
+    -fx-prompt-text-fill: #444466;
+    -fx-padding: 8 10;
+    -fx-font-size: 13px;
+    -fx-pref-width: 220;
+}
+
+.asistencia-input-cedula:focused {
+    -fx-border-color: #7c5cbf;
+}
+
+/* ── Boton de Entrada ── */
+.asistencia-btn-entrada {
+    -fx-background-color: linear-gradient(to right, #7c5cbf, #a78bfa);
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-padding: 9 18;
+    -fx-background-radius: 8;
+    -fx-cursor: hand;
+    -fx-font-size: 13px;
+}
+
+.asistencia-btn-entrada:hover {
+    -fx-opacity: 0.9;
+}
+
+/* ── Boton de Salida ── */
+.asistencia-btn-salida {
+    -fx-background-color: #2a2a45;
+    -fx-border-color: #3a3a55;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+    -fx-text-fill: #8888aa;
+    -fx-padding: 9 18;
+    -fx-cursor: hand;
+    -fx-font-size: 13px;
+}
+
+.asistencia-btn-salida:hover {
+    -fx-text-fill: #a78bfa;
+    -fx-border-color: #7c5cbf;
+}
+
+/* ── Mensaje de retroalimentacion en la caja rapida ── */
+.asistencia-mensaje-exito {
+    -fx-text-fill: #4ade80;
+    -fx-font-size: 12px;
+}
+
+.asistencia-mensaje-error {
+    -fx-text-fill: #f87171;
+    -fx-font-size: 12px;
+}
+
+/* ── Tarjeta del registro del dia ── */
+.asistencia-card {
+    -fx-background-color: #1f1f35;
+    -fx-border-color: #2a2a45;
+    -fx-border-radius: 12;
+    -fx-background-radius: 12;
+    -fx-padding: 22;
+}
+
+/* ── Subtitulo "REGISTRO DEL DIA" ── */
+.asistencia-subtitulo {
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #8888aa;
+}
+
+/* ── Etiqueta del filtro de fecha ── */
+.asistencia-label-filtro {
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #8888aa;
+}
+
+/* ── DatePicker del filtro por fecha ── */
+.asistencia-datepicker {
+    -fx-background-color: #13131f;
+    -fx-border-color: #2a2a45;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+}
+
+.asistencia-datepicker .text-field {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-text-fill: #e0e0f0;
+}
+
+/* ── Tabla del historial de asistencia ── */
+.asistencia-tabla {
+    -fx-background-color: #13131f;
+    -fx-border-color: #2a2a45;
+    -fx-border-radius: 8;
+    -fx-font-size: 13px;
+}
+
+/* Encabezado de columnas ── */
+.asistencia-tabla .column-header-background {
+    -fx-background-color: #171727;
+}
+
+.asistencia-tabla .column-header .label {
+    -fx-text-fill: #555577;
+    -fx-font-weight: bold;
+    -fx-font-size: 11px;
+}
+
+/* Filas de datos ── */
+.asistencia-tabla .table-row-cell {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent transparent #22223a transparent;
+    -fx-text-fill: #e0e0f0;
+}
+
+.asistencia-tabla .table-row-cell:hover {
+    -fx-background-color: rgba(124,92,191,0.06);
+}
+
+.asistencia-tabla .table-row-cell:selected {
+    -fx-background-color: rgba(124,92,191,0.18);
+}
+
+.asistencia-tabla .table-cell {
+    -fx-text-fill: #e0e0f0;
+    -fx-padding: 10 14;
+}
+
+/* ── Estado "Completado": cliente ya salio ── */
+.asistencia-estado-completado {
+    -fx-text-fill: #4ade80;
+    -fx-font-weight: bold;
+}
+
+/* ── Estado "En gym": cliente aun dentro ── */
+.asistencia-estado-engym {
+    -fx-text-fill: #fbbf24;
+    -fx-font-weight: bold;
+}
