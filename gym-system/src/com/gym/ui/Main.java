@@ -1,5 +1,6 @@
 package com.gym.ui;
 
+import com.gym.model.Usuario;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
@@ -9,117 +10,233 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
+import javafx.geometry.Pos;
 
-// Clase principal que inicia la aplicación y maneja la navegación
 public class Main extends Application {
 
-    // Colores del tema oscuro
-    private static final String COLOR_FONDO  = "#1a1a2e";
-    private static final String COLOR_NAVBAR = "#0f3460";
-    private static final String COLOR_BOTON  = "#7c3aed";
-    private static final String COLOR_TEXTO  = "#ffffff";
+private static final String COLOR_FONDO = "#1a1a2e";
+private static final String COLOR_NAVBAR = "#0f3460";
+private static final String COLOR_BOTON = "#7c3aed";
 
-    @Override
-    public void start(Stage stage) {
+@Override
+public void start(Stage stage) {
 
-        // ── Barra de navegación superior ──
-        HBox navbar = new HBox(15);
-        navbar.setStyle("-fx-background-color: " + COLOR_NAVBAR + ";");
-        navbar.setPadding(new Insets(12, 20, 12, 20));
+LoginUI loginUI = new LoginUI(usuario -> {
+cargarSistema(stage, usuario);
+});
 
-        // Logo del sistema
-        Label logo = new Label("💪 GymPro");
-        logo.setFont(Font.font("Arial", FontWeight.BOLD, 16));
-        logo.setTextFill(Color.web(COLOR_BOTON));
+Scene scene = new Scene(loginUI.getVista(), 400, 350);
+stage.setScene(scene);
+stage.setTitle("Login - GymPro");
+stage.show();
+}
 
-        // Botones de navegación
-        Button btnInscripcion = crearBotonNav("Inscripción");
-        Button btnClientes    = crearBotonNav("Clientes");
-        Button btnMembresias  = crearBotonNav("Membresías");
+private void cargarSistema(Stage stage, Usuario usuario) {
 
-        navbar.getChildren().addAll(logo, btnInscripcion, btnClientes, btnMembresias);
+// modulos
+ClienteUI clienteUI = new ClienteUI();
+MembresiaUI membresiaUI = new MembresiaUI();
+InscripcionUI inscripcionUI = new InscripcionUI();
+ProductoUI productoUI = new ProductoUI();
+VentaUI ventaUI = new VentaUI(productoUI.getListaProductos());
 
-        // ── Área de contenido con scroll ──
-        // Aquí se muestra la pantalla seleccionada
-        ScrollPane scroll = new ScrollPane();
-        scroll.setFitToWidth(true);
-        scroll.setStyle("-fx-background-color: " + COLOR_FONDO + ";");
+PagoUI pagoUI = new PagoUI();
+AsistenciaUI asistenciaUI = new AsistenciaUI();
+EntrenadorUI entrenadorUI = new EntrenadorUI();
 
-        // ── Crear las vistas de cada pantalla ──
-        ClienteUI clienteUI       = new ClienteUI();
-        MembresiaUI membresiaUI   = new MembresiaUI();
-        InscripcionUI inscripcionUI = new InscripcionUI();
+HBox navbar = new HBox(8);
+navbar.setStyle("-fx-background-color: " + COLOR_NAVBAR + ";");
+navbar.setPadding(new Insets(12, 20, 12, 20));
 
-        // Mostrar la pantalla de Inscripción por defecto al iniciar
-        scroll.setContent(inscripcionUI.getVista());
+Label logo = new Label("💪 GymPro");
+logo.setFont(Font.font("Impact", FontWeight.BOLD, 18));
+logo.setTextFill(Color.WHITE);
 
-        // ── Navegación: cada botón cambia el contenido del scroll ──
-        btnInscripcion.setOnAction(e -> {
-            scroll.setContent(inscripcionUI.getVista());
-            resaltarBoton(btnInscripcion, btnClientes, btnMembresias);
-        });
+Button btnInscripcion = crearBotonNav("Inscripcion");
+Button btnClientes = crearBotonNav("Clientes");
+Button btnMembresias = crearBotonNav("Membresias");
+Button btnProductos = crearBotonNav("Productos");
+Button btnVentas = crearBotonNav("Ventas");
+Button btnPagos = crearBotonNav("Pagos");
+Button btnAsistencia = crearBotonNav("Asistencia");
+Button btnEntrenadores= crearBotonNav("Entrenadores");
 
-        btnClientes.setOnAction(e -> {
-            scroll.setContent(clienteUI.getVista());
-            resaltarBoton(btnClientes, btnInscripcion, btnMembresias);
-        });
+Button btnLogout = crearBotonNav("Cerrar Sesion");
 
-        btnMembresias.setOnAction(e -> {
-            scroll.setContent(membresiaUI.getVista());
-            resaltarBoton(btnMembresias, btnInscripcion, btnClientes);
-        });
+btnLogout.setStyle(
+"-fx-background-color: #4c1987;" +
+"-fx-text-fill: white;" +
+"-fx-font-weight: bold;" +
+"-fx-padding: 6 14;" +
+"-fx-background-radius: 8;"
+);
 
-        // Resaltar el botón de Inscripción por defecto
-        resaltarBoton(btnInscripcion, btnClientes, btnMembresias);
+// usando ENUM
+Usuario.Rol rol = usuario.getRol();
 
-        // ── Layout principal: navbar arriba + contenido abajo ──
-        VBox root = new VBox(navbar, scroll);
-        VBox.setVgrow(scroll, Priority.ALWAYS); // el scroll ocupa todo el espacio restante
+// CONTROL POR ROLES
+HBox izquierda = new HBox(logo);
 
-        // ── Configuración de la ventana ──
-        Scene scene = new Scene(root, 950, 700);
-        stage.setTitle("GymPro - Sistema de Gestión");
-        stage.setScene(scene);
-        stage.show();
-    }
+HBox centro = new HBox(10);
+centro.setAlignment(Pos.CENTER);
 
-    // Crea un botón de navegación con estilo base
-    private Button crearBotonNav(String texto) {
-        Button btn = new Button(texto);
-        btn.setStyle(
-            "-fx-background-color: transparent;" +
-            "-fx-text-fill: white;" +
-            "-fx-font-size: 13;" +
-            "-fx-padding: 6 12;" +
-            "-fx-background-radius: 6;"
-        );
-        return btn;
-    }
+HBox derecha = new HBox(btnLogout);
+derecha.setAlignment(Pos.CENTER_RIGHT);
 
-    // Resalta el botón activo y quita el resaltado de los otros
-    private void resaltarBoton(Button activo, Button... otros) {
-        // Estilo del botón activo (morado)
-        activo.setStyle(
-            "-fx-background-color: #7c3aed;" +
-            "-fx-text-fill: white;" +
-            "-fx-font-size: 13;" +
-            "-fx-padding: 6 12;" +
-            "-fx-background-radius: 6;"
-        );
-        // Estilo normal para los otros botones
-        for (Button btn : otros) {
-            btn.setStyle(
-                "-fx-background-color: transparent;" +
-                "-fx-text-fill: white;" +
-                "-fx-font-size: 13;" +
-                "-fx-padding: 6 12;" +
-                "-fx-background-radius: 6;"
-            );
-        }
-    }
+// 🔐 agregar botones según rol
+switch (rol) {
 
-    // Método main que lanza la aplicación
-    public static void main(String[] args) {
-        launch(args);
-    }
+case ENTRENADOR:
+centro.getChildren().addAll(
+btnClientes,
+btnAsistencia
+);
+break;
+
+case RECEPCIONISTA:
+centro.getChildren().addAll(
+btnInscripcion,
+btnClientes,
+btnMembresias,
+btnVentas,
+btnPagos,
+btnAsistencia
+);
+break;
+
+case ADMINISTRADOR:
+centro.getChildren().addAll(
+btnInscripcion,
+btnClientes,
+btnMembresias,
+btnProductos,
+btnVentas,
+btnPagos,
+btnAsistencia,
+btnEntrenadores
+);
+break;
+}
+
+// espaciadores para centrar
+Region espacioIzq = new Region();
+Region espacioDer = new Region();
+HBox.setHgrow(espacioIzq, Priority.ALWAYS);
+HBox.setHgrow(espacioDer, Priority.ALWAYS);
+
+// agregar todo al navbar
+navbar.getChildren().addAll(
+izquierda,
+espacioIzq,
+centro,
+espacioDer,
+derecha
+);
+
+ScrollPane scroll = new ScrollPane();
+scroll.setFitToWidth(true);
+scroll.setStyle("-fx-background-color: " + COLOR_FONDO + ";");
+
+// vista inicial según rol
+switch (rol) {
+case ENTRENADOR:
+scroll.setContent(asistenciaUI.getVista());
+break;
+default:
+scroll.setContent(inscripcionUI.getVista());
+break;
+}
+
+Button[] todosBotones = {
+btnInscripcion, btnClientes, btnMembresias,
+btnProductos, btnVentas,
+btnPagos, btnAsistencia, btnEntrenadores
+};
+
+btnInscripcion.setOnAction(e ->
+cambiarVista(scroll, btnInscripcion, todosBotones, inscripcionUI.getVista())
+);
+
+btnClientes.setOnAction(e ->
+cambiarVista(scroll, btnClientes, todosBotones, clienteUI.getVista())
+);
+
+btnMembresias.setOnAction(e ->
+cambiarVista(scroll, btnMembresias, todosBotones, membresiaUI.getVista())
+);
+
+btnProductos.setOnAction(e ->
+cambiarVista(scroll, btnProductos, todosBotones, productoUI.getVista())
+);
+
+btnVentas.setOnAction(e ->
+cambiarVista(scroll, btnVentas, todosBotones, ventaUI.getVista())
+);
+
+btnPagos.setOnAction(e ->
+cambiarVista(scroll, btnPagos, todosBotones, pagoUI.getVista())
+);
+
+btnAsistencia.setOnAction(e ->
+cambiarVista(scroll, btnAsistencia, todosBotones, asistenciaUI.getVista())
+);
+
+btnEntrenadores.setOnAction(e ->
+cambiarVista(scroll, btnEntrenadores, todosBotones, entrenadorUI.getVista())
+);
+
+btnLogout.setOnAction(e -> {
+LoginUI loginUI = new LoginUI(usuarioLogin -> {
+cargarSistema(stage, usuarioLogin);
+});
+
+Scene scene = new Scene(loginUI.getVista(), 400, 350);
+stage.setScene(scene);
+stage.setTitle("Login - GymPro");
+});
+
+VBox root = new VBox(navbar, scroll);
+VBox.setVgrow(scroll, Priority.ALWAYS);
+
+Scene scene = new Scene(root, 1050, 700);
+stage.setScene(scene);
+stage.setTitle("GymPro - Sistema de Gestion");
+}
+
+private void cambiarVista(ScrollPane scroll, Button activo, Button[] todos, Pane vista) {
+scroll.setContent(vista);
+resaltarBoton(activo, todos);
+}
+
+private Button crearBotonNav(String texto) {
+Button btn = new Button(texto);
+btn.setStyle(
+"-fx-background-color: transparent;" +
+"-fx-text-fill: white;" +
+"-fx-font-size: 13;" +
+"-fx-padding: 6 12;" +
+"-fx-background-radius: 6;"
+);
+return btn;
+}
+
+private void resaltarBoton(Button activo, Button[] todos) {
+for (Button btn : todos) {
+if (btn == activo) {
+btn.setStyle(
+"-fx-background-color: #7c3aed;" +
+"-fx-text-fill: white;"
+);
+} else {
+btn.setStyle(
+"-fx-background-color: transparent;" +
+"-fx-text-fill: white;"
+);
+}
+}
+}
+
+public static void main(String[] args) {
+launch(args);
+}
 }
