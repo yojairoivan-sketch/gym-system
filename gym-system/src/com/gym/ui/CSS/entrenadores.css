@@ -1,0 +1,225 @@
+/* ── Fondo principal ── */
+.entrenador-root {
+    -fx-background-color: #1a1a2e;
+    -fx-font-family: "Arial";
+}
+
+/* ── Titulo principal ── */
+.entrenador-titulo {
+    -fx-font-size: 22px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #ffffff;
+}
+
+/* ── Tarjeta contenedora ── */
+.entrenador-card {
+    -fx-background-color: #16213e;
+    -fx-border-color: #0f3460;
+    -fx-border-radius: 10;
+    -fx-background-radius: 10;
+    -fx-padding: 22;
+}
+
+/* ── Subtitulos ── */
+.entrenador-subtitulo {
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #a78bfa;
+}
+
+/* ── Etiquetas de campos ── */
+.entrenador-label {
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #ffffff;
+}
+
+/* ── Campos de texto ── */
+.entrenador-input {
+    -fx-background-color: #0f3460;
+    -fx-border-color: #0f3460;
+    -fx-border-radius: 6;
+    -fx-background-radius: 6;
+    -fx-text-fill: #ffffff;
+    -fx-prompt-text-fill: #6b7280;
+    -fx-padding: 8 10;
+    -fx-font-size: 13px;
+}
+
+.entrenador-input:focused {
+    -fx-border-color: #7c3aed;
+}
+
+/* ── ComboBox ── */
+.entrenador-combo {
+    -fx-background-color: #0f3460;
+    -fx-border-color: #0f3460;
+    -fx-border-radius: 6;
+    -fx-background-radius: 6;
+}
+
+.entrenador-combo .list-cell {
+    -fx-text-fill: #ffffff;
+    -fx-background-color: transparent;
+    -fx-font-size: 13px;
+}
+
+.entrenador-combo-popup .list-view {
+    -fx-background-color: #16213e;
+    -fx-border-color: #0f3460;
+}
+
+.entrenador-combo-popup .list-cell:hover {
+    -fx-background-color: #0f3460;
+}
+
+/* ── Boton Guardar / Actualizar ── */
+.entrenador-btn-primary {
+    -fx-background-color: #7c3aed;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-padding: 8 20;
+    -fx-background-radius: 8;
+    -fx-cursor: hand;
+    -fx-font-size: 13px;
+}
+
+.entrenador-btn-primary:hover {
+    -fx-opacity: 0.88;
+}
+
+/* ── Boton Cancelar ── */
+.entrenador-btn-cancelar {
+    -fx-background-color: #0f3460;
+    -fx-border-color: #0f3460;
+    -fx-border-radius: 6;
+    -fx-background-radius: 6;
+    -fx-text-fill: #a78bfa;
+    -fx-padding: 8 18;
+    -fx-cursor: hand;
+    -fx-font-size: 13px;
+}
+
+.entrenador-btn-cancelar:hover {
+    -fx-text-fill: #ffffff;
+}
+
+/* ── Boton Editar en tabla ── */
+.entrenador-btn-editar {
+    -fx-background-color: #374151;
+    -fx-border-color: #374151;
+    -fx-border-radius: 5;
+    -fx-background-radius: 5;
+    -fx-text-fill: #ffffff;
+    -fx-padding: 4 10;
+    -fx-cursor: hand;
+    -fx-font-size: 12px;
+}
+
+.entrenador-btn-editar:hover {
+    -fx-background-color: #0f3460;
+    -fx-border-color: #7c3aed;
+}
+
+/* ── Boton Eliminar en tabla ── */
+.entrenador-btn-eliminar {
+    -fx-background-color: rgba(248,113,113,0.15);
+    -fx-border-color: rgba(248,113,113,0.25);
+    -fx-border-radius: 5;
+    -fx-background-radius: 5;
+    -fx-text-fill: #f87171;
+    -fx-padding: 4 10;
+    -fx-cursor: hand;
+    -fx-font-size: 12px;
+}
+
+.entrenador-btn-eliminar:hover {
+    -fx-background-color: rgba(248,113,113,0.28);
+}
+
+/* ── Mensajes ── */
+.entrenador-mensaje-exito {
+    -fx-text-fill: #4ade80;
+    -fx-font-size: 12px;
+}
+
+.entrenador-mensaje-error {
+    -fx-text-fill: #f87171;
+    -fx-font-size: 12px;
+}
+
+/* ── Tabla ── */
+.entrenador-tabla {
+    -fx-background-color: #0f3460;
+    -fx-border-color: #0f3460;
+    -fx-border-radius: 6;
+    -fx-font-size: 13px;
+}
+
+.entrenador-tabla .column-header-background {
+    -fx-background-color: #16213e;
+}
+
+.entrenador-tabla .column-header .label {
+    -fx-text-fill: #a78bfa;
+    -fx-font-weight: bold;
+    -fx-font-size: 11px;
+}
+
+.entrenador-tabla .table-row-cell {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent transparent #0f3460 transparent;
+    -fx-text-fill: #ffffff;
+}
+
+.entrenador-tabla .table-row-cell:hover {
+    -fx-background-color: rgba(124,58,237,0.08);
+}
+
+.entrenador-tabla .table-row-cell:selected {
+    -fx-background-color: rgba(124,58,237,0.22);
+}
+
+.entrenador-tabla .table-cell {
+    -fx-text-fill: #ffffff;
+    -fx-padding: 10 14;
+}
+
+/* ── Estados ── */
+.entrenador-estado-activo {
+    -fx-text-fill: #4ade80;
+    -fx-font-weight: bold;
+}
+
+.entrenador-estado-inactivo {
+    -fx-text-fill: #f87171;
+    -fx-font-weight: bold;
+}
+
+.entrenador-estado-descanso {
+    -fx-text-fill: #fbbf24;
+    -fx-font-weight: bold;
+}
+
+/* Fondo del dropdown (la lista que se abre) */
+.combo-box-popup .list-view {
+    -fx-background-color: #16213e;
+    -fx-border-color: #0f3460;
+}
+
+/* Opciones del dropdown */
+.combo-box-popup .list-cell {
+    -fx-background-color: transparent;
+    -fx-text-fill: #ffffff;
+}
+
+/* Hover */
+.combo-box-popup .list-cell:hover {
+    -fx-background-color: #0f3460;
+}
+
+/* Seleccionado */
+.combo-box-popup .list-cell:selected {
+    -fx-background-color: #7c3aed;
+    -fx-text-fill: #ffffff;
+}
