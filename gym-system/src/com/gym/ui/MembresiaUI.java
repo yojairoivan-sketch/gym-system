@@ -14,13 +14,17 @@ import java.time.LocalDate;
 
 public class MembresiaUI {
 
-    // ── Colores del tema oscuro ──────────────────────────────
+    // Colores del tema oscuro 
     private static final String COLOR_FONDO     = "#1a1a2e"; // fondo general
     private static final String COLOR_PANEL     = "#16213e"; // fondo de paneles
     private static final String COLOR_CAMPO     = "#0f3460"; // fondo de inputs
     private static final String COLOR_BOTON     = "#7c3aed"; // color botón principal
     private static final String COLOR_TEXTO     = "#ffffff"; // texto blanco
     private static final String COLOR_SUBTITULO = "#a78bfa"; // morado claro para títulos
+
+    // --- CONEXIÓN CON BASE DE DATOS ---
+    private com.gym.dao.MembresiaDAO membresiaDAO = new com.gym.dao.MembresiaDAO();
+    // ----------------------------------
 
     // Lista observable: cuando se agrega un item, la tabla se actualiza automáticamente
     private ObservableList<Membresia> listaMembresias = FXCollections.observableArrayList();
@@ -40,6 +44,10 @@ public class MembresiaUI {
         root.setStyle("-fx-background-color: " + COLOR_FONDO + ";");
         root.setPadding(new Insets(20));
 
+        // --- CARGAR DATOS AL INICIAR ---
+        cargarDatosDesdeBD();
+        // -------------------------------
+
         // Agregamos el formulario arriba y la tabla abajo
         root.getChildren().addAll(
             crearFormulario(),
@@ -47,6 +55,15 @@ public class MembresiaUI {
         );
 
         return root;
+    }
+
+    // Método para cargar la información real de SQL
+    private void cargarDatosDesdeBD() {
+        try {
+            listaMembresias.setAll(membresiaDAO.listarTodos());
+        } catch (Exception e) {
+            System.err.println("Error al cargar membresías: " + e.getMessage());
+        }
     }
 
     // Crea el panel superior con el formulario de asignación
@@ -60,7 +77,6 @@ public class MembresiaUI {
         titulo.setFont(Font.font("Arial", FontWeight.BOLD, 12));
         titulo.setTextFill(Color.web(COLOR_SUBTITULO));
 
-        // ── Fila 1: Tipo de membresía y Duración ──
         HBox fila1 = new HBox(15);
 
         // Opciones de tipo de membresía con precio
@@ -84,7 +100,6 @@ public class MembresiaUI {
             crearCampoCombo("Duración", cmbDuracion)
         );
 
-        // ── Fila 2: Fecha inicio y Estado ──
         HBox fila2 = new HBox(15);
         dpFechaInicio.setStyle(estiloInput());
         dpFechaInicio.setMaxWidth(Double.MAX_VALUE);
@@ -100,7 +115,7 @@ public class MembresiaUI {
             crearCampoCombo("Estado", cmbEstado)
         );
 
-        // ── Botón para guardar la membresía ──
+        // Botón para guardar la membresía
         Button btnAsignar = new Button("Asignar");
         btnAsignar.setStyle(
             "-fx-background-color: " + COLOR_BOTON + ";" +
@@ -109,7 +124,7 @@ public class MembresiaUI {
             "-fx-background-radius: 8;" +
             "-fx-padding: 8 20;"
         );
-        // Al hacer click llama al método asignarMembresia()
+        // Al hacer click llama al método asignarMembresia
         btnAsignar.setOnAction(e -> asignarMembresia());
 
         panel.getChildren().addAll(titulo, fila1, fila2, btnAsignar);
@@ -126,7 +141,7 @@ public class MembresiaUI {
         titulo.setFont(Font.font("Arial", FontWeight.BOLD, 12));
         titulo.setTextFill(Color.web(COLOR_SUBTITULO));
 
-        // ── Columnas de la tabla ──
+        // Columnas de la tabla 
         TableColumn<Membresia, String> colTipo = columna("PLAN", "tipo", 150);
 
         // Columna de fecha de inicio
@@ -141,11 +156,10 @@ public class MembresiaUI {
 
         TableColumn<Membresia, String> colEstado = columna("ESTADO", "estado", 100);
 
-        // ── Columna con botón Renovar ──
+        // Columna con botón Renovar
         TableColumn<Membresia, Void> colRenovar = new TableColumn<>("ACCIÓN");
         colRenovar.setPrefWidth(100);
         colRenovar.setCellFactory(col -> new TableCell<>() {
-            // Botón que se crea para cada fila
             final Button btn = new Button("Renovar");
             {
                 btn.setStyle(
@@ -154,23 +168,24 @@ public class MembresiaUI {
                     "-fx-background-radius: 5;" +
                     "-fx-padding: 4 10;"
                 );
-                // Al hacer click obtiene la membresía de esa fila y la renueva
                 btn.setOnAction(e -> {
                     Membresia m = getTableView().getItems().get(getIndex());
                     renovarMembresia(m);
                 });
             }
-            // updateItem se llama cada vez que la celda se renderiza
             @Override
             protected void updateItem(Void item, boolean empty) {
                 super.updateItem(item, empty);
-                // Si la fila está vacía no muestra el botón
                 setGraphic(empty ? null : btn);
             }
         });
 
-        tabla.getColumns().addAll(colTipo, colInicio, colFin, colEstado, colRenovar);
-        tabla.setItems(listaMembresias); // conecta la lista a la tabla
+        // 🔧 CORREGIDO AQUÍ
+        tabla.getColumns().addAll(
+            java.util.Arrays.asList(colTipo, colInicio, colFin, colEstado, colRenovar)
+        );
+
+        tabla.setItems(listaMembresias);
         tabla.setStyle("-fx-background-color: " + COLOR_CAMPO + ";");
         tabla.setPrefHeight(250);
 
@@ -178,7 +193,6 @@ public class MembresiaUI {
         return panel;
     }
 
-    // Crea un campo con etiqueta y ComboBox
     private VBox crearCampoCombo(String etiqueta, ComboBox<String> combo) {
         VBox box = new VBox(4);
         HBox.setHgrow(box, Priority.ALWAYS);
@@ -188,7 +202,6 @@ public class MembresiaUI {
         return box;
     }
 
-    // Crea un campo con etiqueta y DatePicker
     private VBox crearCampoFecha(String etiqueta, DatePicker dp) {
         VBox box = new VBox(4);
         HBox.setHgrow(box, Priority.ALWAYS);
@@ -199,7 +212,6 @@ public class MembresiaUI {
         return box;
     }
 
-    // Crea una columna de tabla con título, propiedad y ancho
     private TableColumn<Membresia, String> columna(String titulo, String propiedad, double ancho) {
         TableColumn<Membresia, String> col = new TableColumn<>(titulo);
         col.setCellValueFactory(new PropertyValueFactory<>(propiedad));
@@ -207,7 +219,6 @@ public class MembresiaUI {
         return col;
     }
 
-    // Estilo CSS reutilizable para inputs y combos
     private String estiloInput() {
         return "-fx-background-color: " + COLOR_CAMPO + ";" +
                "-fx-text-fill: white;" +
@@ -216,14 +227,12 @@ public class MembresiaUI {
                "-fx-padding: 8;";
     }
 
-    // Lógica para asignar una nueva membresía
     private void asignarMembresia() {
         String tipo          = cmbTipo.getValue();
         String duracionTexto = cmbDuracion.getValue();
         LocalDate fechaInicio = dpFechaInicio.getValue();
         String estado        = cmbEstado.getValue();
 
-        // Convierte la duración de texto a número de meses
         int duracionMeses;
         switch (duracionTexto) {
             case "3 meses":  duracionMeses = 3;  break;
@@ -232,10 +241,8 @@ public class MembresiaUI {
             default:         duracionMeses = 1;  break;
         }
 
-        // Calcula la fecha de vencimiento según los meses seleccionados
         LocalDate fechaFin = fechaInicio.plusMonths(duracionMeses);
 
-        // Asigna el precio según el tipo de membresía
         double precio;
         switch (tipo) {
             case "Pro — $2,500/mes":   precio = 2500; break;
@@ -243,25 +250,35 @@ public class MembresiaUI {
             default:                   precio = 1800; break;
         }
 
-        // Crea el objeto Membresia usando el constructor correcto
-        // null en cliente porque aún no está conectado a la BD
         Membresia m = new Membresia(tipo, duracionMeses, precio, fechaInicio, null);
-        m.setFechaFin(fechaFin); // sobreescribe la fecha fin calculada
+        m.setFechaFin(fechaFin);
         m.setEstado(estado);
 
-        listaMembresias.add(m); // esto actualiza la tabla automáticamente
-        limpiar(); // limpia el formulario
+        try {
+            membresiaDAO.guardar(m);
+            listaMembresias.add(m);
+            limpiar();
+        } catch (Exception e) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error de Conexión");
+            alert.setContentText("No se pudo guardar la membresía: " + e.getMessage());
+            alert.showAndWait();
+        }
     }
 
-    // Renueva una membresía existente desde hoy por 1 mes
     private void renovarMembresia(Membresia m) {
         m.setFechaInicio(LocalDate.now());
         m.setFechaFin(LocalDate.now().plusMonths(1));
         m.setEstado("Activa");
-        tabla.refresh(); // refresca la tabla para mostrar los cambios
+
+        try {
+            membresiaDAO.actualizar(m);
+            tabla.refresh();
+        } catch (Exception e) {
+            System.err.println("Error al renovar en BD: " + e.getMessage());
+        }
     }
 
-    // Limpia todos los campos del formulario a sus valores por defecto
     private void limpiar() {
         cmbTipo.setValue("Básico — $1,800/mes");
         cmbDuracion.setValue("1 mes");

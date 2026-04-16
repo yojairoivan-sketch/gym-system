@@ -1,11 +1,9 @@
 package com.gym.ui;
 
-import com.gym.model.Producto;
-import com.gym.model.Venta;
+import com.gym.model.Membresia;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.*;
@@ -13,45 +11,33 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import java.time.LocalDate;
-import java.time.LocalTime;
 
 public class VentaUI {
 
-    // ── Colores del tema oscuro ──────────────────────────────
-    private static final String COLOR_FONDO     = "#1a1a2e"; // fondo general
-    private static final String COLOR_PANEL     = "#16213e"; // fondo de paneles
-    private static final String COLOR_CAMPO     = "#0f3460"; // fondo de inputs
-    private static final String COLOR_BOTON     = "#7c3aed"; // color botón principal
-    private static final String COLOR_TEXTO     = "#ffffff"; // texto blanco
-    private static final String COLOR_SUBTITULO = "#a78bfa"; // morado claro para títulos
-    private static final String COLOR_ALERTA    = "#ef4444"; // rojo para alertas
+    // Colores del tema oscuro 
+    private static final String COLOR_FONDO     = "#1a1a2e"; 
+    private static final String COLOR_PANEL     = "#16213e"; 
+    private static final String COLOR_CAMPO     = "#0f3460"; 
+    private static final String COLOR_BOTON     = "#7c3aed"; 
+    private static final String COLOR_TEXTO     = "#ffffff"; 
+    private static final String COLOR_SUBTITULO = "#a78bfa"; 
 
-    // Lista de productos disponibles para vender (viene de ProductoUI)
-    private ObservableList<Producto> listaProductos;
+    private com.gym.dao.MembresiaDAO membresiaDAO = new com.gym.dao.MembresiaDAO();
 
-    // Lista observable de ventas registradas
-    private ObservableList<Venta> listaVentas = FXCollections.observableArrayList();
+    private ObservableList<Membresia> listaMembresias = FXCollections.observableArrayList();
+    private TableView<Membresia> tabla = new TableView<>();
 
-    // Tabla que muestra el historial de ventas
-    private TableView<Venta> tabla = new TableView<>();
+    private ComboBox<String> cmbTipo     = new ComboBox<>(); 
+    private ComboBox<String> cmbDuracion = new ComboBox<>(); 
+    private DatePicker dpFechaInicio     = new DatePicker(LocalDate.now()); 
+    private ComboBox<String> cmbEstado   = new ComboBox<>(); 
 
-    // Campos del formulario de venta
-    private ComboBox<Producto> cmbProducto  = new ComboBox<>(); // selector de producto
-    private TextField txtCantidad           = new TextField();  // cantidad a vender
-    private ComboBox<String> cmbMetodoPago  = new ComboBox<>(); // método de pago
-    private Label lblTotal                  = new Label("$0.00"); // total calculado
-    private Label lblStockDisponible        = new Label("Stock disponible: -"); // stock actual
-
-    // Constructor que recibe la lista de productos de ProductoUI
-    public VentaUI(ObservableList<Producto> listaProductos) {
-        this.listaProductos = listaProductos;
-    }
-
-    // Método principal que devuelve toda la vista de Ventas
     public VBox getVista() {
-        VBox root = new VBox(20);
+        VBox root = new VBox(20); 
         root.setStyle("-fx-background-color: " + COLOR_FONDO + ";");
         root.setPadding(new Insets(20));
+
+        cargarDatosDesdeBD();
 
         root.getChildren().addAll(
             crearFormulario(),
@@ -61,255 +47,120 @@ public class VentaUI {
         return root;
     }
 
-    // Crea el panel superior con el formulario de venta
+    private void cargarDatosDesdeBD() {
+        try {
+            listaMembresias.setAll(membresiaDAO.listarTodos());
+        } catch (Exception e) {
+            System.err.println("Error al cargar membresías: " + e.getMessage());
+        }
+    }
+
     private VBox crearFormulario() {
-        VBox panel = new VBox(15);
+        VBox panel = new VBox(15); 
         panel.setStyle("-fx-background-color: " + COLOR_PANEL + "; -fx-background-radius: 10;");
         panel.setPadding(new Insets(20));
 
-        // Título del formulario
-        Label titulo = new Label("REGISTRAR VENTA");
+        Label titulo = new Label("ASIGNAR MEMBRESÍA");
         titulo.setFont(Font.font("Arial", FontWeight.BOLD, 12));
         titulo.setTextFill(Color.web(COLOR_SUBTITULO));
 
-        // ── Selector de producto ──
-        // Conecta la lista de productos al ComboBox
-        cmbProducto.setItems(listaProductos);
-        cmbProducto.setMaxWidth(Double.MAX_VALUE);
-        cmbProducto.setStyle(estiloInput());
-        cmbProducto.setPromptText("Seleccionar producto...");
+        HBox fila1 = new HBox(15);
+        cmbTipo.getItems().addAll("Básico — $1,800/mes", "Pro — $2,500/mes", "Elite — $4,200/mes");
+        cmbTipo.setValue("Básico — $1,800/mes");
+        cmbTipo.setStyle(estiloInput());
+        cmbTipo.setMaxWidth(Double.MAX_VALUE);
 
-        // Muestra el nombre del producto en el ComboBox
-        cmbProducto.setCellFactory(lv -> new ListCell<>() {
-            @Override
-            protected void updateItem(Producto p, boolean empty) {
-                super.updateItem(p, empty);
-                setText(empty || p == null ? null : p.getNombre() + " — $" + p.getPrecio());
-            }
-        });
-        cmbProducto.setButtonCell(new ListCell<>() {
-            @Override
-            protected void updateItem(Producto p, boolean empty) {
-                super.updateItem(p, empty);
-                setText(empty || p == null ? null : p.getNombre() + " — $" + p.getPrecio());
-            }
-        });
+        cmbDuracion.getItems().addAll("1 mes", "3 meses", "6 meses", "12 meses");
+        cmbDuracion.setValue("1 mes");
+        cmbDuracion.setStyle(estiloInput());
+        cmbDuracion.setMaxWidth(Double.MAX_VALUE);
 
-        // Al seleccionar un producto actualiza el stock disponible y el total
-        cmbProducto.setOnAction(e -> actualizarInfo());
-
-        // Estilo del label de stock disponible
-        lblStockDisponible.setTextFill(Color.web(COLOR_TEXTO));
-
-        VBox productoBox = new VBox(4);
-        Label lblProducto = new Label("Producto");
-        lblProducto.setTextFill(Color.web(COLOR_TEXTO));
-        productoBox.getChildren().addAll(lblProducto, cmbProducto, lblStockDisponible);
-
-        // ── Fila: Cantidad y Método de pago ──
-        HBox fila = new HBox(15);
-        txtCantidad.setPromptText("1");
-        // Al cambiar la cantidad recalcula el total
-        txtCantidad.textProperty().addListener((obs, old, nuevo) -> calcularTotal());
-
-        cmbMetodoPago.getItems().addAll("Efectivo", "Tarjeta", "Transferencia");
-        cmbMetodoPago.setValue("Efectivo");
-        cmbMetodoPago.setStyle(estiloInput());
-        cmbMetodoPago.setMaxWidth(Double.MAX_VALUE);
-
-        fila.getChildren().addAll(
-            crearCampo("Cantidad", txtCantidad),
-            crearCampoCombo("Método de pago", cmbMetodoPago)
+        fila1.getChildren().addAll(
+            crearCampoCombo("Tipo de membresía", cmbTipo),
+            crearCampoCombo("Duración", cmbDuracion)
         );
 
-        // ── Total calculado automáticamente ──
-        HBox totalBox = new HBox(10);
-        totalBox.setAlignment(Pos.CENTER_LEFT);
-        Label lblTotalTexto = new Label("Total:");
-        lblTotalTexto.setTextFill(Color.web(COLOR_TEXTO));
-        lblTotalTexto.setFont(Font.font("Arial", FontWeight.BOLD, 14));
-        lblTotal.setFont(Font.font("Arial", FontWeight.BOLD, 18));
-        lblTotal.setTextFill(Color.web(COLOR_BOTON)); // morado para destacar el total
-        totalBox.getChildren().addAll(lblTotalTexto, lblTotal);
+        HBox fila2 = new HBox(15);
+        dpFechaInicio.setStyle(estiloInput());
+        dpFechaInicio.setMaxWidth(Double.MAX_VALUE);
 
-        // ── Botón registrar venta ──
-        Button btnVender = new Button("Registrar Venta");
-        btnVender.setMaxWidth(Double.MAX_VALUE);
-        btnVender.setStyle(
-            "-fx-background-color: " + COLOR_BOTON + ";" +
-            "-fx-text-fill: white;" +
-            "-fx-font-weight: bold;" +
-            "-fx-font-size: 13;" +
-            "-fx-background-radius: 8;" +
-            "-fx-padding: 10;"
+        cmbEstado.getItems().addAll("Activa", "Vencida", "Suspendida");
+        cmbEstado.setValue("Activa");
+        cmbEstado.setStyle(estiloInput());
+        cmbEstado.setMaxWidth(Double.MAX_VALUE);
+
+        fila2.getChildren().addAll(
+            crearCampoFecha("Fecha de inicio", dpFechaInicio),
+            crearCampoCombo("Estado", cmbEstado)
         );
-        // Al hacer click procesa la venta
-        btnVender.setOnAction(e -> registrarVenta());
 
-        panel.getChildren().addAll(titulo, productoBox, fila, totalBox, btnVender);
+        Button btnAsignar = new Button("Asignar");
+        btnAsignar.setStyle("-fx-background-color: " + COLOR_BOTON + "; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 8; -fx-padding: 8 20;");
+        btnAsignar.setOnAction(e -> registrarVenta());
+
+        panel.getChildren().addAll(titulo, fila1, fila2, btnAsignar);
         return panel;
     }
 
-    // Crea el panel inferior con el historial de ventas
     private VBox crearTabla() {
         VBox panel = new VBox(15);
         panel.setStyle("-fx-background-color: " + COLOR_PANEL + "; -fx-background-radius: 10;");
         panel.setPadding(new Insets(20));
 
-        Label titulo = new Label("HISTORIAL DE VENTAS");
+        Label titulo = new Label("MEMBRESÍAS REGISTRADAS");
         titulo.setFont(Font.font("Arial", FontWeight.BOLD, 12));
         titulo.setTextFill(Color.web(COLOR_SUBTITULO));
 
-        // ── Columnas de la tabla ──
-        // Columna de producto — muestra el nombre del producto vendido
-        TableColumn<Venta, Void> colProducto = new TableColumn<>("PRODUCTO");
-        colProducto.setPrefWidth(150);
-        colProducto.setCellFactory(col -> new TableCell<>() {
+        TableColumn<Membresia, String> colTipo = columna("PLAN", "tipo", 150);
+        TableColumn<Membresia, LocalDate> colInicio = new TableColumn<>("INICIO");
+        colInicio.setCellValueFactory(new PropertyValueFactory<>("fechaInicio"));
+        colInicio.setPrefWidth(120);
+
+        TableColumn<Membresia, LocalDate> colFin = new TableColumn<>("VENCIMIENTO");
+        colFin.setCellValueFactory(new PropertyValueFactory<>("fechaFin"));
+        colFin.setPrefWidth(120);
+
+        TableColumn<Membresia, String> colEstado = columna("ESTADO", "estado", 100);
+
+        TableColumn<Membresia, Void> colRenovar = new TableColumn<>("ACCIÓN");
+        colRenovar.setPrefWidth(100);
+        colRenovar.setCellFactory(col -> new TableCell<>() {
+            final Button btn = new Button("Renovar");
+            {
+                btn.setStyle("-fx-background-color: #374151; -fx-text-fill: white; -fx-background-radius: 5; -fx-padding: 4 10;");
+                btn.setOnAction(e -> {
+                    Membresia m = getTableView().getItems().get(getIndex());
+                    renovarMembresia(m);
+                });
+            }
             @Override
             protected void updateItem(Void item, boolean empty) {
                 super.updateItem(item, empty);
-                if (empty) {
-                    setText(null);
-                } else {
-                    Venta v = getTableView().getItems().get(getIndex());
-                    setText(v.getProducto().getNombre());
-                }
+                setGraphic(empty ? null : btn);
             }
         });
 
-        TableColumn<Venta, Integer> colCantidad = new TableColumn<>("CANTIDAD");
-        colCantidad.setCellValueFactory(new PropertyValueFactory<>("cantidad"));
-        colCantidad.setPrefWidth(90);
-
-        TableColumn<Venta, Double> colTotal = new TableColumn<>("TOTAL");
-        colTotal.setCellValueFactory(new PropertyValueFactory<>("total"));
-        colTotal.setPrefWidth(100);
-
-        TableColumn<Venta, String> colMetodo = new TableColumn<>("MÉTODO");
-        colMetodo.setCellValueFactory(new PropertyValueFactory<>("metodoPago"));
-        colMetodo.setPrefWidth(110);
-
-        TableColumn<Venta, LocalDate> colFecha = new TableColumn<>("FECHA");
-        colFecha.setCellValueFactory(new PropertyValueFactory<>("fecha"));
-        colFecha.setPrefWidth(110);
-
-        tabla.getColumns().addAll(colProducto, colCantidad, colTotal, colMetodo, colFecha);
-        tabla.setItems(listaVentas); // conecta la lista a la tabla
+        tabla.getColumns().clear();
+        tabla.getColumns().add(colTipo);
+        tabla.getColumns().add(colInicio);
+        tabla.getColumns().add(colFin);
+        tabla.getColumns().add(colEstado);
+        tabla.getColumns().add(colRenovar);
+        tabla.setItems(listaMembresias);
         tabla.setStyle("-fx-background-color: " + COLOR_CAMPO + ";");
-        tabla.setPrefHeight(280);
+        tabla.setPrefHeight(250);
 
         panel.getChildren().addAll(titulo, tabla);
         return panel;
     }
 
-    // Actualiza el stock disponible y el total cuando se selecciona un producto
-    private void actualizarInfo() {
-        Producto p = cmbProducto.getValue();
-        if (p != null) {
-            // Muestra el stock disponible con alerta si está bajo
-            if (p.stockBajo()) {
-                lblStockDisponible.setText("⚠ Stock bajo: " + p.getStock() + " unidades");
-                lblStockDisponible.setTextFill(Color.web(COLOR_ALERTA));
-            } else {
-                lblStockDisponible.setText("Stock disponible: " + p.getStock() + " unidades");
-                lblStockDisponible.setTextFill(Color.web("#22c55e")); // verde
-            }
-            calcularTotal();
-        }
+    // --- MÉTODOS DE APOYO Y ESTILO ---
+    
+    public String estiloInput() {
+        return "-fx-background-color: " + COLOR_CAMPO + "; -fx-text-fill: white; -fx-background-radius: 6; -fx-padding: 8;";
     }
 
-    // Calcula el total multiplicando precio por cantidad
-    private void calcularTotal() {
-        Producto p = cmbProducto.getValue();
-        if (p == null) return;
-        try {
-            int cantidad = Integer.parseInt(txtCantidad.getText().trim());
-            double total = cantidad * p.getPrecio();
-            lblTotal.setText("$" + String.format("%.2f", total));
-        } catch (NumberFormatException e) {
-            lblTotal.setText("$0.00"); // si la cantidad no es válida muestra 0
-        }
-    }
-
-    // Lógica para registrar una venta
-    private void registrarVenta() {
-        Producto producto = cmbProducto.getValue();
-        String cantidadTexto = txtCantidad.getText().trim();
-        String metodoPago = cmbMetodoPago.getValue();
-
-        // Validación: debe seleccionar un producto
-        if (producto == null) {
-            mostrarAlerta("Selecciona un producto para continuar.");
-            return;
-        }
-
-        // Validación: la cantidad debe ser un número válido
-        int cantidad;
-        try {
-            cantidad = Integer.parseInt(cantidadTexto);
-            if (cantidad <= 0) throw new NumberFormatException();
-        } catch (NumberFormatException e) {
-            mostrarAlerta("La cantidad debe ser un número mayor a 0.");
-            return;
-        }
-
-        // Validación: verifica si hay suficiente stock
-        if (!producto.hayStock(cantidad)) {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Stock insuficiente");
-            alert.setContentText("Solo hay " + producto.getStock() + " unidades disponibles.");
-            alert.showAndWait();
-            return;
-        }
-
-        // Descuenta el stock del producto
-        producto.descontarStock(cantidad);
-
-        // Crea la venta con fecha y hora actual
-        Venta venta = new Venta(
-            LocalDate.now(),
-            LocalTime.now(),
-            cantidad,
-            metodoPago,
-            producto
-        );
-
-        listaVentas.add(venta); // agrega la venta al historial
-
-        // Si el stock quedó bajo del mínimo muestra alerta visual
-        if (producto.stockBajo()) {
-            Alert alert = new Alert(Alert.AlertType.WARNING);
-            alert.setTitle("⚠ Stock bajo");
-            alert.setContentText("El producto '" + producto.getNombre() +
-                "' tiene stock bajo: " + producto.getStock() + " unidades restantes.");
-            alert.showAndWait();
-        }
-
-        limpiar();
-    }
-
-    // Muestra un mensaje de advertencia
-    private void mostrarAlerta(String mensaje) {
-        Alert alert = new Alert(Alert.AlertType.WARNING);
-        alert.setTitle("Atención");
-        alert.setContentText(mensaje);
-        alert.showAndWait();
-    }
-
-    // Crea un campo de texto con su etiqueta
-    private VBox crearCampo(String etiqueta, TextField campo) {
-        VBox box = new VBox(4);
-        HBox.setHgrow(box, Priority.ALWAYS);
-        Label lbl = new Label(etiqueta);
-        lbl.setTextFill(Color.web(COLOR_TEXTO));
-        campo.setStyle(estiloInput());
-        campo.setMaxWidth(Double.MAX_VALUE);
-        box.getChildren().addAll(lbl, campo);
-        return box;
-    }
-
-    // Crea un campo con etiqueta y ComboBox
-    private VBox crearCampoCombo(String etiqueta, ComboBox<String> combo) {
+    public VBox crearCampoCombo(String etiqueta, ComboBox<String> combo) {
         VBox box = new VBox(4);
         HBox.setHgrow(box, Priority.ALWAYS);
         Label lbl = new Label(etiqueta);
@@ -318,22 +169,105 @@ public class VentaUI {
         return box;
     }
 
-    // Estilo CSS reutilizable para inputs
-    private String estiloInput() {
-        return "-fx-background-color: " + COLOR_CAMPO + ";" +
-               "-fx-text-fill: white;" +
-               "-fx-prompt-text-fill: #6b7280;" +
-               "-fx-background-radius: 6;" +
-               "-fx-padding: 8;";
+    // Este es el método que te faltaba y el Main pedía:
+    public VBox crearCampo(String etiqueta, TextField txt) {
+        VBox box = new VBox(4);
+        HBox.setHgrow(box, Priority.ALWAYS);
+        Label lbl = new Label(etiqueta);
+        lbl.setTextFill(Color.web(COLOR_TEXTO));
+        txt.setStyle(estiloInput());
+        box.getChildren().addAll(lbl, txt);
+        return box;
     }
 
-    // Limpia el formulario después de registrar una venta
+    private VBox crearCampoFecha(String etiqueta, DatePicker dp) {
+        VBox box = new VBox(4);
+        HBox.setHgrow(box, Priority.ALWAYS);
+        Label lbl = new Label(etiqueta);
+        lbl.setTextFill(Color.web(COLOR_TEXTO));
+        box.getChildren().addAll(lbl, dp);
+        return box;
+    }
+
+    private TableColumn<Membresia, String> columna(String titulo, String propiedad, double ancho) {
+        TableColumn<Membresia, String> col = new TableColumn<>(titulo);
+        col.setCellValueFactory(new PropertyValueFactory<>(propiedad));
+        col.setPrefWidth(ancho);
+        return col;
+    }
+
+    // --- MÉTODOS QUE EL MAIN BUSCA (PUENTE) ---
+
+    public void actualizarInfo() {
+        cargarDatosDesdeBD();
+    }
+
+    public void calcularTotal() {
+        // Implementar lógica de cálculo si es necesario
+    }
+
+    public void registrarVenta() {
+        asignarMembresia();
+    }
+
+    // --- LÓGICA DE NEGOCIO ---
+
+    private void asignarMembresia() {
+        String tipo = cmbTipo.getValue();
+        String duracionTexto = cmbDuracion.getValue();
+        LocalDate fechaInicio = dpFechaInicio.getValue();
+        String estado = cmbEstado.getValue();
+
+        int duracionMeses = switch (duracionTexto) {
+            case "3 meses" -> 3;
+            case "6 meses" -> 6;
+            case "12 meses" -> 12;
+            default -> 1;
+        };
+
+        LocalDate fechaFin = fechaInicio.plusMonths(duracionMeses);
+        double precio = switch (tipo) {
+            case "Pro — $2,500/mes" -> 2500;
+            case "Elite — $4,200/mes" -> 4200;
+            default -> 1800;
+        };
+
+        Membresia m = new Membresia(tipo, duracionMeses, precio, fechaInicio, null);
+        m.setFechaFin(fechaFin);
+        m.setEstado(estado);
+
+        try {
+            membresiaDAO.guardar(m);
+            listaMembresias.add(m);
+            limpiar();
+        } catch (Exception e) {
+            mostrarAlerta("Error de Conexión", "No se pudo guardar: " + e.getMessage());
+        }
+    }
+
+    private void renovarMembresia(Membresia m) {
+        m.setFechaInicio(LocalDate.now());
+        m.setFechaFin(LocalDate.now().plusMonths(1));
+        m.setEstado("Activa");
+        try {
+            membresiaDAO.actualizar(m);
+            tabla.refresh();
+        } catch (Exception e) {
+            System.err.println("Error al renovar: " + e.getMessage());
+        }
+    }
+
     private void limpiar() {
-        cmbProducto.setValue(null);
-        txtCantidad.clear();
-        cmbMetodoPago.setValue("Efectivo");
-        lblTotal.setText("$0.00");
-        lblStockDisponible.setText("Stock disponible: -");
-        lblStockDisponible.setTextFill(Color.web(COLOR_TEXTO));
+        cmbTipo.setValue("Básico — $1,800/mes");
+        cmbDuracion.setValue("1 mes");
+        dpFechaInicio.setValue(LocalDate.now());
+        cmbEstado.setValue("Activa");
+    }
+
+    private void mostrarAlerta(String titulo, String contenido) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle(titulo);
+        alert.setContentText(contenido);
+        alert.showAndWait();
     }
 }

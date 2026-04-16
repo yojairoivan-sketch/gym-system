@@ -1,14 +1,13 @@
 {
-    // Use IntelliSense to learn about possible attributes.
-    // Hover to view descriptions of existing attributes.
-    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
         {
             "type": "java",
-            "name": "Current File",
+            "name": "Run JavaFX App",
             "request": "launch",
-            "mainClass": "${file}"
+            "mainClass": "com.gym.ui.Main",
+            "projectName": "gym-system-1_e6eb152c",
+            "vmArgs": "--module-path \"C:/Users/i3 Touch/OneDrive/Desktop/javafx-sdk-21.0.10/lib\" --add-modules javafx.controls,javafx.fxml"
         }
     ]
 }
