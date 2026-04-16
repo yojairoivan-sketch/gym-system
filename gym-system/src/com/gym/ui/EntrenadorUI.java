@@ -24,8 +24,8 @@ public class EntrenadorUI {
     private TextField        tfCedula;
     private TextField        tfTelefono;
     private TextField        tfCorreo;
-    private TextField        tfEspecialidad;
-    private TextField        tfHorario;
+    private ComboBox<String> cbEspecialidad;
+    private ComboBox<String> cbHorario;
     private ComboBox<String> cbEstado;
 
     // Tabla del listado de entrenadores
@@ -92,12 +92,25 @@ public class EntrenadorUI {
         HBox fila3 = crearFila(crearGrupo("Correo", tfCorreo));
 
         // Fila 4: especialidad y horario de trabajo 
-        tfEspecialidad = crearInput("Ej: Musculacion, CrossFit");
-        tfHorario      = crearInput("Ej: L-V 6AM-2PM");
-        HBox fila4 = crearFila(
-            crearGrupo("Especialidad", tfEspecialidad),
-            crearGrupo("Horario",      tfHorario)
-        );
+        cbEspecialidad = new ComboBox<>(FXCollections.observableArrayList(
+    "Musculación", "CrossFit", "Yoga", "Pilates",
+    "Cardio", "Spinning", "Calistenia", "Funcional"
+));
+cbEspecialidad.setMaxWidth(Double.MAX_VALUE);
+cbEspecialidad.getStyleClass().add("entrenador-combo");
+
+cbHorario = new ComboBox<>(FXCollections.observableArrayList(
+    "L-V 6AM-2PM", "L-V 2PM-10PM",
+    "S-D 7AM-3PM", "L-S 8AM-4PM",
+    "L-V 10AM-6PM"
+));
+cbHorario.setMaxWidth(Double.MAX_VALUE);
+cbHorario.getStyleClass().add("entrenador-combo");
+
+HBox fila4 = crearFila(
+    crearGrupo("Especialidad", cbEspecialidad),
+    crearGrupo("Horario",      cbHorario)
+);
 
         // Fila 5: estado del entrenador 
         cbEstado = new ComboBox<>(FXCollections.observableArrayList(
@@ -271,8 +284,8 @@ public class EntrenadorUI {
                 null, // fecha de nacimiento no se captura en esta pantalla
                 tfTelefono.getText().trim(),
                 tfCorreo.getText().trim(),
-                tfEspecialidad.getText().trim(),
-                tfHorario.getText().trim()
+                cbEspecialidad.getValue() != null ? cbEspecialidad.getValue() : "",
+cbHorario.getValue()      != null ? cbHorario.getValue()      : ""
             );
             entrenadorDAO.guardar(nuevo);
             mostrarMensaje("Entrenador registrado correctamente.", true);
@@ -283,8 +296,8 @@ public class EntrenadorUI {
             entrenadorEnEdicion.setCedula(tfCedula.getText().trim());
             entrenadorEnEdicion.setTelefono(tfTelefono.getText().trim());
             entrenadorEnEdicion.setCorreo(tfCorreo.getText().trim());
-            entrenadorEnEdicion.setEspecialidad(tfEspecialidad.getText().trim());
-            entrenadorEnEdicion.setHorario(tfHorario.getText().trim());
+            entrenadorEnEdicion.setEspecialidad(cbEspecialidad.getValue() != null ? cbEspecialidad.getValue() : "");
+entrenadorEnEdicion.setHorario(cbHorario.getValue()           != null ? cbHorario.getValue()      : "");
             entrenadorDAO.actualizar(entrenadorEnEdicion);
             mostrarMensaje("Entrenador actualizado correctamente.", true);
             entrenadorEnEdicion = null;
@@ -303,8 +316,8 @@ public class EntrenadorUI {
         tfCedula.setText(ent.getCedula());
         tfTelefono.setText(ent.getTelefono()     != null ? ent.getTelefono()     : "");
         tfCorreo.setText(ent.getCorreo()         != null ? ent.getCorreo()       : "");
-        tfEspecialidad.setText(ent.getEspecialidad() != null ? ent.getEspecialidad() : "");
-        tfHorario.setText(ent.getHorario()       != null ? ent.getHorario()      : "");
+        cbEspecialidad.setValue(ent.getEspecialidad() != null ? ent.getEspecialidad() : null);
+cbHorario.setValue(ent.getHorario()           != null ? ent.getHorario()      : null);
         cbEstado.setValue(ent.isActivo() ? "Activo" : "Inactivo");
         btnGuardar.setText("Actualizar");
     }
@@ -322,8 +335,8 @@ public class EntrenadorUI {
         tfCedula.clear();
         tfTelefono.clear();
         tfCorreo.clear();
-        tfEspecialidad.clear();
-        tfHorario.clear();
+        cbEspecialidad.setValue(null);
+cbHorario.setValue(null);
         cbEstado.setValue("Activo");
     }
 

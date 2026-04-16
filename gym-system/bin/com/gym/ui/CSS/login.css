@@ -1,0 +1,73 @@
+/* Fondo general */
+.login-root {
+    -fx-background-color: #1a1a2e;
+}
+
+/* Panel principal */
+.login-panel {
+    -fx-background-color: #16213e;
+    -fx-background-radius: 12;
+    -fx-padding: 25;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.4), 15, 0.2, 0, 4);
+}
+
+/* Titulo pequeno */
+.login-subtitulo {
+    -fx-text-fill: #a78bfa;
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+}
+
+/* Titulo principal */
+.login-titulo {
+    -fx-text-fill: #ffffff;
+    -fx-font-size: 25px;
+    -fx-font-weight: bold;
+    -fx-font-weight: bold;
+    -fx-font-family: "Impact";
+    -fx-letter-spacing: 1.5px;
+}
+
+/* Labels */
+.login-label {
+    -fx-text-fill: #ffffff;
+}
+
+/* Inputs */
+.login-input {
+    -fx-background-color: #0f3460;
+    -fx-text-fill: white;
+    -fx-prompt-text-fill: #6b7280;
+    -fx-background-radius: 6;
+    -fx-padding: 8;
+}
+
+/* Boton */
+.login-boton {
+    -fx-background-color: #7c3aed;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+    -fx-background-radius: 8;
+    -fx-padding: 10;
+}
+
+/* Mensaje error */
+.login-error {
+    -fx-text-fill: #ff4d4d;
+}
+
+/* Mensaje exito */
+.login-success {
+    -fx-text-fill: #90ee90;
+}
+
+.login-boton:hover {
+    -fx-background-color: #9f67ff;
+    -fx-cursor: hand;
+}
+
+.login-input:focused {
+    -fx-border-color: #7c3aed;
+    -fx-border-width: 1.5;
+}
