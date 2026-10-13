@@ -2,7 +2,6 @@ package com.gym.util;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.SQLException;
 
 public class ConexionDB {
 
@@ -11,12 +10,22 @@ public class ConexionDB {
     private static final String PASSWORD = "1015sql2026"; 
 
     public static Connection getConexion() {
-        try {
-            Connection conexion = DriverManager.getConnection(URL, USUARIO, PASSWORD);
-            return conexion;
-        } catch (SQLException e) {
-            System.out.println("Error al conectar: " + e.getMessage());
-            return null;
-        }
+    try {
+        Class.forName("com.mysql.cj.jdbc.Driver"); // 👈 CLAVE
+
+        Connection conexion = DriverManager.getConnection(
+            "jdbc:mysql://localhost:3306/gimnasio_db?useSSL=false&serverTimezone=UTC",
+            "root",
+            "1015sql2026"
+        );
+
+        System.out.println("Conexion exitosa"); // 👈 para probar
+        return conexion;
+
+    } catch (Exception e) {
+        System.out.println("Error al conectar: " + e);
+        return null;
     }
 }
+    }
+
