@@ -1,0 +1,11 @@
+/* Estilos globales del sistema (se aplican a todas las pantallas) */
+
+/* Valor seleccionado de los ComboBox: texto claro sobre el fondo oscuro */
+.combo-box > .list-cell {
+    -fx-text-fill: white;
+}
+
+/* Fondo oscuro también cuando el contenido es más bajo que la ventana */
+.scroll-pane > .viewport {
+    -fx-background-color: #1a1a2e;
+}

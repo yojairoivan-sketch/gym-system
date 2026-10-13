@@ -150,7 +150,7 @@ public class ProductoUI {
                     if (p.stockBajo()) {
                         setStyle("-fx-text-fill: " + COLOR_ALERTA + "; -fx-font-weight: bold;");
                     } else {
-                        setStyle("-fx-text-fill: white;");
+                        setStyle("");
                     }
                 }
             }

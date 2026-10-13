@@ -37,16 +37,6 @@ public class Main extends Application {
 
     private void cargarSistema(Stage stage, Usuario usuario) {
 
-        // Módulos
-        ClienteUI clienteUI         = new ClienteUI();
-        MembresiaUI membresiaUI     = new MembresiaUI();
-        InscripcionUI inscripcionUI = new InscripcionUI();
-        ProductoUI productoUI       = new ProductoUI();
-        VentaUI ventaUI             = new VentaUI();
-        PagoUI pagoUI               = new PagoUI();
-        AsistenciaUI asistenciaUI   = new AsistenciaUI();
-        EntrenadorUI entrenadorUI   = new EntrenadorUI();
-
         HBox navbar = new HBox(8);
         navbar.setStyle("-fx-background-color: " + COLOR_NAVBAR + ";");
         navbar.setPadding(new Insets(12, 20, 12, 20));
@@ -114,34 +104,38 @@ public class Main extends Application {
 
         // Vista inicial según rol
         if (usuario.getRol() == Usuario.Rol.ENTRENADOR) {
-            cambiarVista(scroll, btnAsistencia, todosBotones, asistenciaUI.getVista());
+            cambiarVista(scroll, btnAsistencia, todosBotones, new AsistenciaUI().getVista());
         } else {
-            cambiarVista(scroll, btnInscripcion, todosBotones, inscripcionUI.getVista());
+            cambiarVista(scroll, btnInscripcion, todosBotones, new InscripcionUI().getVista());
         }
 
+        // Cada navegación crea la pantalla de nuevo: así muestra datos actualizados
+        // de la base y no se duplican columnas ni opciones de los formularios
         btnInscripcion.setOnAction(e ->
-                cambiarVista(scroll, btnInscripcion, todosBotones, inscripcionUI.getVista()));
+                cambiarVista(scroll, btnInscripcion, todosBotones, new InscripcionUI().getVista()));
         btnClientes.setOnAction(e ->
-                cambiarVista(scroll, btnClientes, todosBotones, clienteUI.getVista()));
+                cambiarVista(scroll, btnClientes, todosBotones, new ClienteUI().getVista()));
         btnMembresias.setOnAction(e ->
-                cambiarVista(scroll, btnMembresias, todosBotones, membresiaUI.getVista()));
+                cambiarVista(scroll, btnMembresias, todosBotones, new MembresiaUI().getVista()));
         btnProductos.setOnAction(e ->
-                cambiarVista(scroll, btnProductos, todosBotones, productoUI.getVista()));
+                cambiarVista(scroll, btnProductos, todosBotones, new ProductoUI().getVista()));
         btnVentas.setOnAction(e ->
-                cambiarVista(scroll, btnVentas, todosBotones, ventaUI.getVista()));
+                cambiarVista(scroll, btnVentas, todosBotones, new VentaUI().getVista()));
         btnPagos.setOnAction(e ->
-                cambiarVista(scroll, btnPagos, todosBotones, pagoUI.getVista()));
+                cambiarVista(scroll, btnPagos, todosBotones, new PagoUI().getVista()));
         btnAsistencia.setOnAction(e ->
-                cambiarVista(scroll, btnAsistencia, todosBotones, asistenciaUI.getVista()));
+                cambiarVista(scroll, btnAsistencia, todosBotones, new AsistenciaUI().getVista()));
         btnEntrenadores.setOnAction(e ->
-                cambiarVista(scroll, btnEntrenadores, todosBotones, entrenadorUI.getVista()));
+                cambiarVista(scroll, btnEntrenadores, todosBotones, new EntrenadorUI().getVista()));
 
         btnLogout.setOnAction(e -> mostrarLogin(stage));
 
         VBox root = new VBox(navbar, scroll);
         VBox.setVgrow(scroll, Priority.ALWAYS);
 
-        stage.setScene(new Scene(root, 1050, 700));
+        Scene scene = new Scene(root, 1050, 700);
+        scene.getStylesheets().add(getClass().getResource("/com/gym/ui/CSS/app.css").toExternalForm());
+        stage.setScene(scene);
         stage.setTitle("GymPro - Sistema de Gestión");
     }
 

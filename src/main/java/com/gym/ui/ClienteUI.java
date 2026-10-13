@@ -223,7 +223,6 @@ public class ClienteUI {
         TableColumn<Cliente, String> col = new TableColumn<>(titulo);
         col.setCellValueFactory(new PropertyValueFactory<>(propiedad));
         col.setPrefWidth(ancho);
-        col.setStyle("-fx-text-fill: white;");
         return col;
     }
 
