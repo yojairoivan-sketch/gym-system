@@ -15,7 +15,7 @@ import java.time.LocalDate;
 
 public class ClienteUI {
 
-    // Colores del tema oscuro
+    //Colores del tema oscuro
     private static final String COLOR_FONDO = "#1a1a2e";
     private static final String COLOR_PANEL = "#16213e";
     private static final String COLOR_CAMPO = "#0f3460";
@@ -23,10 +23,14 @@ public class ClienteUI {
     private static final String COLOR_TEXTO = "#ffffff";
     private static final String COLOR_SUBTITULO = "#a78bfa";
 
+    // --- CONEXIÓN CON BASE DE DATOS ---
+    private com.gym.dao.ClienteDAO clienteDAO = new com.gym.dao.ClienteDAO();
+    // ----------------------------------
+
     private ObservableList<Cliente> listaClientes = FXCollections.observableArrayList();
     private TableView<Cliente> tabla = new TableView<>();
 
-    // Campos del formulario
+    //Campos del formulario
     private TextField txtNombre = new TextField();
     private TextField txtApellido = new TextField();
     private TextField txtCedula = new TextField();
@@ -43,12 +47,25 @@ public class ClienteUI {
         root.setStyle("-fx-background-color: " + COLOR_FONDO + ";");
         root.setPadding(new Insets(20));
 
+        // --- CARGAR DATOS AL INICIAR ---
+        cargarDatosDesdeBD();
+        // -------------------------------
+
         root.getChildren().addAll(
             crearFormulario(),
             crearTabla()
         );
 
         return root;
+    }
+
+    // Método para traer los clientes desde MySQL
+    private void cargarDatosDesdeBD() {
+        try {
+            listaClientes.setAll(clienteDAO.listarTodos());
+        } catch (Exception e) {
+            System.err.println("Error al cargar clientes: " + e.getMessage());
+        }
     }
 
     private VBox crearFormulario() {
@@ -60,14 +77,14 @@ public class ClienteUI {
         titulo.setFont(Font.font("Arial", FontWeight.BOLD, 12));
         titulo.setTextFill(Color.web(COLOR_SUBTITULO));
 
-        // Fila 1: Nombre y Apellido
+        //Nombre y Apellido
         HBox fila1 = new HBox(15);
         fila1.getChildren().addAll(
             crearCampo("Nombre", txtNombre),
             crearCampo("Apellido", txtApellido)
         );
 
-        // Fila 2: Cédula y Teléfono
+        //Cédula y Teléfono
         HBox fila2 = new HBox(15);
         txtCedula.setPromptText("000-0000000-0");
         txtTelefono.setPromptText("+1 809");
@@ -76,7 +93,7 @@ public class ClienteUI {
             crearCampo("Teléfono", txtTelefono)
         );
 
-        // Fila 3: Correo y Fecha
+        //Correo y Fecha
         HBox fila3 = new HBox(15);
         txtCorreo.setPromptText("correo@email.com");
         dpFechaInscripcion.setStyle(estiloInput());
@@ -85,7 +102,6 @@ public class ClienteUI {
             crearCampoFecha("Fecha de inscripción", dpFechaInscripcion)
         );
 
-        // Fila 4: Estado y Botón
         HBox fila4 = new HBox(15);
         fila4.setAlignment(Pos.CENTER_LEFT);
         cmbEstado.getItems().addAll("Activo", "Inactivo");
@@ -103,7 +119,6 @@ public class ClienteUI {
         );
         btnGuardar.setOnAction(e -> guardarCliente());
 
-        HBox estadoBox = new HBox(10);
         VBox estadoLabel = new VBox(3);
         Label lbEstado = new Label("Estado");
         lbEstado.setTextFill(Color.web(COLOR_TEXTO));
@@ -129,19 +144,19 @@ public class ClienteUI {
         titulo.setFont(Font.font("Arial", FontWeight.BOLD, 12));
         titulo.setTextFill(Color.web(COLOR_SUBTITULO));
 
-        // Buscador
+        //Buscador
         txtBuscar.setPromptText("🔍 Buscar por nombre o cédula...");
         txtBuscar.setStyle(estiloInput());
         txtBuscar.setPrefWidth(Double.MAX_VALUE);
         txtBuscar.textProperty().addListener((obs, old, nuevo) -> filtrarClientes(nuevo));
 
-        // Columnas
+        //Columnas
         TableColumn<Cliente, String> colNombre = columna("NOMBRE", "nombre", 150);
         TableColumn<Cliente, String> colCedula = columna("CÉDULA", "cedula", 130);
         TableColumn<Cliente, String> colTelefono = columna("TELÉFONO", "telefono", 120);
         TableColumn<Cliente, String> colEstado = columna("ESTADO", "estado", 100);
 
-        // Columna Editar
+        //Columna Editar
         TableColumn<Cliente, Void> colEditar = new TableColumn<>("ACCIÓN");
         colEditar.setPrefWidth(100);
         colEditar.setCellFactory(col -> new TableCell<>() {
@@ -165,19 +180,24 @@ public class ClienteUI {
             }
         });
 
-        tabla.getColumns().addAll(colNombre, colCedula, colTelefono, colEstado, colEditar);
+        tabla.getColumns().add(colNombre);
+        tabla.getColumns().add(colCedula);
+        tabla.getColumns().add(colTelefono);
+        tabla.getColumns().add(colEstado);
+        tabla.getColumns().add(colEditar);
+        tabla.setItems(listaClientes);       // sigue igual
+
+        tabla.setPrefHeight(250);
         tabla.setItems(listaClientes);
         tabla.setStyle(
             "-fx-background-color: " + COLOR_CAMPO + ";" +
             "-fx-text-fill: white;"
         );
-        tabla.setPrefHeight(250);
 
         panel.getChildren().addAll(titulo, txtBuscar, tabla);
         return panel;
     }
 
-    // helpers
     private VBox crearCampo(String etiqueta, TextField campo) {
         VBox box = new VBox(4);
         HBox.setHgrow(box, Priority.ALWAYS);
@@ -232,21 +252,36 @@ public class ClienteUI {
             return;
         }
 
-        if (clienteEditando != null) {
-            clienteEditando.setNombre(nombre);
-            clienteEditando.setApellido(apellido);
-            clienteEditando.setCedula(cedula);
-            clienteEditando.setTelefono(telefono);
-            clienteEditando.setCorreo(correo);
-            clienteEditando.setFechaInscripcion(fecha);
-            clienteEditando.setEstado(estado);
-            tabla.refresh();
-            clienteEditando = null;
-        } else {
-            Cliente c = new Cliente(nombre, apellido, cedula, null, telefono, correo, fecha, estado);
-            listaClientes.add(c);
+        try {
+            if (clienteEditando != null) {
+                clienteEditando.setNombre(nombre);
+                clienteEditando.setApellido(apellido);
+                clienteEditando.setCedula(cedula);
+                clienteEditando.setTelefono(telefono);
+                clienteEditando.setCorreo(correo);
+                clienteEditando.setFechaInscripcion(fecha);
+                clienteEditando.setEstado(estado);
+                
+                // --- ACTUALIZACIÓN EN BD ---
+                clienteDAO.actualizar(clienteEditando);
+                
+                tabla.refresh();
+                clienteEditando = null;
+            } else {
+                Cliente c = new Cliente(nombre, apellido, cedula, null, telefono, correo, fecha, estado);
+                
+                // --- PERSISTENCIA EN BD ---
+                clienteDAO.guardar(c);
+                
+                listaClientes.add(c);
+            }
+            limpiar();
+        } catch (Exception e) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error de Base de Datos");
+            alert.setContentText("No se pudo procesar el cliente: " + e.getMessage());
+            alert.showAndWait();
         }
-        limpiar();
     }
 
     private void cargarClienteEnFormulario(Cliente c) {

@@ -10,13 +10,17 @@ import javafx.scene.text.FontWeight;
 
 public class InscripcionUI {
 
-    // ── Colores del tema oscuro ──────────────────────────────
+    // ── Colores del tema oscuro 
     private static final String COLOR_FONDO     = "#1a1a2e"; // fondo general
     private static final String COLOR_PANEL     = "#16213e"; // fondo de paneles
     private static final String COLOR_CAMPO     = "#0f3460"; // fondo de inputs
     private static final String COLOR_BOTON     = "#7c3aed"; // color botón principal
     private static final String COLOR_TEXTO     = "#ffffff"; // texto blanco
     private static final String COLOR_SUBTITULO = "#a78bfa"; // morado claro para títulos
+
+    // --- CONEXIÓN CON BASE DE DATOS ---
+    private com.gym.dao.ClienteDAO clienteDAO = new com.gym.dao.ClienteDAO();
+    // ----------------------------------
 
     // Campos del formulario
     private TextField txtNombre    = new TextField(); // nombre completo
@@ -64,7 +68,7 @@ public class InscripcionUI {
         titulo.setFont(Font.font("Arial", FontWeight.BOLD, 20));
         titulo.setTextFill(Color.web(COLOR_TEXTO));
 
-        // ── Botones de planes ──
+        // Botones de planes 
         // Cada botón muestra el nombre y precio del plan
         configurarBotonPlan(btnBasico, "Básico", "$1,800", false);
         configurarBotonPlan(btnPro, "Pro", "$2,500", true); // true = más popular
@@ -133,7 +137,6 @@ public class InscripcionUI {
         panel.setStyle("-fx-background-color: " + COLOR_PANEL + "; -fx-background-radius: 10;");
         panel.setPadding(new Insets(20));
 
-        // ── Fila 1: Nombre completo y Teléfono ──
         HBox fila1 = new HBox(15);
         txtNombre.setPromptText("Tu nombre");
         txtTelefono.setPromptText("+1 809");
@@ -142,12 +145,10 @@ public class InscripcionUI {
             crearCampo("Teléfono", txtTelefono)
         );
 
-        // ── Fila 2: Correo electrónico ──
         HBox fila2 = new HBox(15);
         txtCorreo.setPromptText("correo@email.com");
         fila2.getChildren().add(crearCampo("Correo electrónico", txtCorreo));
 
-        // ── Fila 3: Fecha de inicio y Referido ──
         HBox fila3 = new HBox(15);
         dpFechaInicio.setStyle(estiloInput());
         dpFechaInicio.setMaxWidth(Double.MAX_VALUE);
@@ -157,11 +158,11 @@ public class InscripcionUI {
             crearCampo("Referido por", txtReferido)
         );
 
-        // ── Checkbox de términos y condiciones ──
+        // Checkbox de términos y condiciones
         chkTerminos.setTextFill(Color.web(COLOR_TEXTO));
         chkTerminos.setStyle("-fx-font-size: 12;");
 
-        // ── Botón principal de inscripción ──
+        // Botón principal de inscripción 
         Button btnInscribir = new Button("Inscribirme ahora");
         btnInscribir.setMaxWidth(Double.MAX_VALUE); // ocupa todo el ancho
         btnInscribir.setStyle(
@@ -222,7 +223,6 @@ public class InscripcionUI {
         String telefono = txtTelefono.getText().trim();
         String correo   = txtCorreo.getText().trim();
 
-        // Validación: campos obligatorios no pueden estar vacíos
         if (nombre.isEmpty() || telefono.isEmpty() || correo.isEmpty()) {
             Alert alert = new Alert(Alert.AlertType.WARNING);
             alert.setTitle("Campos obligatorios");
@@ -231,7 +231,6 @@ public class InscripcionUI {
             return;
         }
 
-        // Validación: el usuario debe aceptar los términos
         if (!chkTerminos.isSelected()) {
             Alert alert = new Alert(Alert.AlertType.WARNING);
             alert.setTitle("Términos y condiciones");
@@ -240,15 +239,39 @@ public class InscripcionUI {
             return;
         }
 
-        // Si todo está bien muestra mensaje de éxito
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Inscripción exitosa");
-        alert.setContentText("¡" + nombre + " inscrito en plan " + planSeleccionado + " exitosamente!");
-        alert.showAndWait();
+        // --- INICIO DE CONEXIÓN CON BASE DE DATOS ---
+        try {
+            // Crea el objeto Cliente usando el modelo
+            com.gym.model.Cliente nuevoCliente = new com.gym.model.Cliente(
+                nombre,                    // nombre
+                "",                        // apellido
+                "",                        // cedula
+                null,                      // fechaNacimiento
+                telefono,                  // telefono
+                correo,                    // correo
+                dpFechaInicio.getValue(),  // fechaInscripcion
+                "Activo"                   // estado
+            );
 
-        // Limpia el formulario después de inscribir
-        limpiar();
-    }
+            // Guarda el cliente en la BD usando el DAO
+            clienteDAO.guardar(nuevoCliente);
+
+            // Si todo está bien muestra mensaje de éxito
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Inscripción exitosa");
+            alert.setContentText("¡" + nombre + " inscrito en plan " + planSeleccionado + " exitosamente!");
+            alert.showAndWait();
+
+            // Limpia el formulario después de inscribir
+            limpiar();
+
+        } catch (Exception e) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error de Base de Datos");
+            alert.setContentText("No se pudo completar la inscripción: " + e.getMessage());
+            alert.showAndWait();
+        }
+        }
 
     // Limpia todos los campos del formulario
     private void limpiar() {
